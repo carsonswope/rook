@@ -1,4 +1,4 @@
-import { AbcResponse } from '../../shared/AbcResponse';
+import { AbcResponse } from '../shared/AbcResponse';
 
 class Ctrl {
 // simple endpoint

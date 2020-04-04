@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
-import { AbcResponse } from '../../../shared/AbcResponse';
+import { AbcResponse } from '../../../server/shared/AbcResponse';
 
 
 @Component({
