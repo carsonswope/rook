@@ -1,7 +1,13 @@
+import { AbcResponse } from '../../shared/AbcResponse';
+
 class Ctrl {
 // simple endpoint
   getAbc =  async (req, res) => {
-    return res.status(200).json({response: 'abc poop'});
+  	const response: AbcResponse = {
+  		field1: 'abc',
+  		field2: 'definitely',
+  	};
+    return res.status(200).json(response);
   }
 }
 

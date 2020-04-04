@@ -3,7 +3,6 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 import * as path from 'path';
 
-// import setMongo from './mongo';
 import setRoutes from './routes';
 
 const app = express();
@@ -18,13 +17,12 @@ if (process.env.NODE_ENV !== 'test') {
 
 async function main() {
   try {
-    // await setMongo();
     setRoutes(app);
     app.get('/*', (req, res) => {
       res.sendFile(path.join(__dirname, '../public/index.html'));
     });
     if (!module.parent) {
-      app.listen(app.get('port'), () => console.log(`Angular Full Stack listening on port ${app.get('port')}`));
+      app.listen(app.get('port'), () => console.log(`Server listening on port ${app.get('port')}`));
     }
   } catch (err) {
     console.error(err);
