@@ -1,0 +1,1 @@
+export const USERNAME_COOKIE = 'rook_username';

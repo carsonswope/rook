@@ -7,19 +7,19 @@ import { HttpClientModule } from '@angular/common/http';
 // Routing
 import { AppRoutingModule } from './app-routing.module';
 
+// Services
+import { UsernameService } from './services/username.service';
+
 // Components
 import { AppComponent } from './app.component';
-import { AboutComponent } from './about/about.component';
-
-
-export function tokenGetter() {
-  return localStorage.getItem('token');
-}
+import { HomeComponent } from './home/home.component';
+import { UsernameComponent } from './username/username.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutComponent,
+    HomeComponent,
+    UsernameComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -29,6 +29,7 @@ export function tokenGetter() {
     HttpClientModule
   ],
   providers: [
+    UsernameService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
