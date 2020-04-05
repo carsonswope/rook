@@ -1,0 +1,121 @@
+.card {
+  font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin:1em;
+  position:absolute;
+  font-size: 20px;
+  height:8em;
+  width:5.6em; //7:10 is roughly how cards are shaped
+  color: #000;
+  border: 1px solid black;
+  
+  -webkit-text-stroke: 0.5px black;
+}
+
+.front {
+  background: #fff;
+  position:absolute;
+  width:100%;
+  height:100%;
+}
+
+.content {
+ position:absolute;
+ height:100%;
+ width:100%;
+ text-align:center;
+}
+
+.green {
+  text-align: left;
+  position::absolute;
+  color: #0a0;
+  width:100%;
+  height:100%;
+}
+.green::after{
+  padding-left:0.5em;
+  position:absolute;
+  font-size:80%;
+  content: " GREEN"; 
+}
+
+.red {
+  text-align: left;
+  position::absolute;
+  color: #a00;
+  width:100%;
+  height:100%;
+}
+.red::after{
+  padding-left:0.5em;
+  position:absolute;
+  font-size:80%;
+  content: " RED"; 
+}
+
+.yellow {
+  text-align: left;
+  position::absolute;
+  color: #aa0;
+  width:100%;
+  height:100%;
+}
+.yellow::after{
+  padding-left:0.5em;
+  position:absolute;
+  font-size:80%;
+  content: " YELLOW"; 
+}
+
+.black {
+  text-align: left;
+  position::absolute;
+  color: #111;
+  width:100%;
+  height:100%;
+}
+.black::after{
+  padding-left:0.5em;
+  position:absolute;
+  font-size:80%;
+  content: " BLACK"; 
+}
+
+.middle {
+ position:absolute;
+ margin-left:50%;
+ margin-top:71.4%; /*50% * 10/7, percentage is based on width*/
+ font-size:200%;
+ border: 1px solid black;
+ height:1em;
+ width:1em;
+ padding:0.4em;
+ text-align:center;
+ transform:translate(-50%,-50%);
+}
+.middle::after{
+  content: none;
+}
+.back {
+ background: #222;
+ position:absolute;
+ width:100%;
+ height:100%;
+}
+
+.top
+{
+  position:absolute;
+  width:100%;
+  height:100%;
+  margin:2px;
+}
+.bottom
+{
+  position:absolute;
+  transform:rotate(180deg);
+  margin:-2px;
+  width:100%;
+  height:100%;
+  position:absolute;
+}
