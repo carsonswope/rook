@@ -49,8 +49,8 @@ export class HomeComponent {
   }
   
   quitMatch(matchId: string) {
-	this.matchesService.quit(matchId).subscribe((m:Match) => {
-	  //console.log(s);
+	this.matchesService.quit(matchId).subscribe((m: Match) => {
+	  this.currentMatches.splice(this.currentMatches.indexOf(m));
 	});
   }
 

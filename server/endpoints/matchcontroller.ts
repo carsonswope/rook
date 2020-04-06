@@ -1,6 +1,7 @@
 // import { RandomnameResponse } from '../shared/RandomnameResponse';
 //import 
 import { RookDatabase } from '../database';
+import { Match } from '../shared/CoreGame';
 
 class MatchController {
 
@@ -62,10 +63,10 @@ class MatchController {
   
   quit = (req, res) => {
 	const matchId: string = req.body.matchId;
-	const username: string = req.username;
-	
-	// fortunately this appears to be a reference! we can just mutate it and it is changed in the 'DB'
-	const m = this.d.getMatch(matchId);
+  	const username: string = req.username;
+
+  	// fortunately this appears to be a reference! we can just mutate it and it is changed in the 'DB'
+  	const m = this.d.getMatch(matchId);
 	if (!m) {
 		console.log('no match with matchId ')
 		console.log(matchId);
@@ -79,7 +80,7 @@ class MatchController {
 	var another_player = false; //if there is another player, we don't need to delete the match afterward
 	for (var seatId = 0; seatId < 4; seatId++){
 		if (m.players[seatId] == username){
-			m.players[seatId] == null;
+			m.players[seatId] = null;
 		}
 		else if (m.players[seatId] != null){
 			another_player = true;
@@ -89,7 +90,7 @@ class MatchController {
 		this.d.deleteMatch(matchId);
 	}
 	
-	return res.status(200).send('left ' + matchId);
+	return res.status(200).json(m);
   }
 
 }

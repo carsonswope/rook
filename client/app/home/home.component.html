@@ -38,7 +38,7 @@
   	<div *ngFor="let match of currentMatches">
   		<div><b>Match name: {{match.id}}</b> - Other players: {{match.players.join(', ')}}
   		<button [routerLink]="'match/' + match.id">return to match</button>
-  		<button (click)="quitMatch(match)">quit match</button>
+  		<button (click)="quitMatch(match.id)">quit match</button>
   	    </div>
   	</div>
   </div>
