@@ -15,15 +15,11 @@ import { Match } from '../../../server/shared/CoreGame';
 })
 export class HomeComponent {
 
-  text: string = 'waiting response';
-  text1: string = 'response 2';
-  httpStatus: number = 0;
-
   newMatchName: string = '';
   joinMatchName: string = '';
   joiningMatch: Match = null;
 
-  currentMatches: Match[];
+  currentMatches: Match[] = [];
 
   constructor(private matchesService: MatchesService, private router: Router) {
     this.fetchMatches();

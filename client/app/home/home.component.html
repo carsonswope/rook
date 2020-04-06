@@ -36,6 +36,7 @@
   <div>
   	current matches you are playing in:
   	<div *ngFor="let match of currentMatches">
+  		<!-- <div> m </div> -->
   		<div><b>Match name: {{match.id}}</b> - Other players: {{match.players.join(', ')}}
   		<button [routerLink]="'match/' + match.id">return to match</button>
   		<button (click)="quitMatch(match.id)">quit match</button>
