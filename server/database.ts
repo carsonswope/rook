@@ -45,10 +45,6 @@ export class RookDatabase {
 	createGame(): Game {
 		const g = new Game();
 		this.games.set(g.id, g);
-		// this.games[g.id] = g;
 		return g;
 	}
-
-
-// >>>>>>> Stashed changes
 }
