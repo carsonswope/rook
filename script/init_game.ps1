@@ -2,22 +2,28 @@
 
 Function post($params) {
   $username = $params[0]
+  $s = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+  $c = New-Object System.Net.Cookie('rook_username',$username,'/','localhost')
+  $s.Cookies.Add($c)
   $url = $params[1]
   $body = $params[2]
   Invoke-WebRequest ('http://localhost:4200' + $url) `
 	-Body $body `
 	-Method 'POST' `
 	-ContentType 'application/json; charset=utf-8' `
-	-Headers @{'Cookie' = 'rook_username=' + $username}
+	-WebSession $s
 }
 
 Function get($params) {
   $username = $params[0]
+  $s = New-Object Microsoft.PowerShell.Commands.WebRequestSession
+  $c = New-Object System.Net.Cookie('rook_username',$username,'/','localhost')
+  $s.Cookies.Add($c)
   $url = $params[1]
   Invoke-WebRequest ('http://localhost:4200' + $url) `
 	-Method 'GET' `
 	-ContentType 'application/json; charset=utf-8' `
-	-Headers @{'Cookie' = 'rook_username=' + $username}
+	-WebSession $s
 }
 
 $u1 = 'swope'
