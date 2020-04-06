@@ -16,6 +16,7 @@ export class UsernameComponent {
   newUsername = '';
 
   constructor(private usernameService: UsernameService) {
+    this.newUsername = this.getUsername();
   }
 
   getUsername() {
@@ -26,6 +27,10 @@ export class UsernameComponent {
   	this.usernameService.setUsername(this.newUsername);
   	this.newUsername = '';
   	this.enteringNewUsername = false;
+
+    // just reset app by reloading everything.
+    // there are more graceful ways of doing this
+    window.location.reload();
   }
 
 }

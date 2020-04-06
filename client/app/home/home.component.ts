@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { AbcResponse } from '../../../server/shared/AbcResponse';
+
+import { MatchesService } from '../services/matches.service'
+import { Match } from '../../../server/shared/CoreGame';
 
 
 @Component({
@@ -15,15 +19,39 @@ export class HomeComponent {
   text1: string = 'response 2';
   httpStatus: number = 0;
 
-  constructor(private http: HttpClient) {
+  newMatchName: string = '';
+  joinMatchName: string = '';
+  joiningMatch: Match = null;
 
-  	this.http.get<AbcResponse>('/api/abc', {observe: 'response'})
-  		.subscribe((r: HttpResponse<AbcResponse>) => {
-  		this.text = r.body.field1;
-  		this.text1 = r.body.field2;
-  		this.httpStatus = r.status;
-  	});
+  currentMatches: Match[];
 
+  constructor(private matchesService: MatchesService, private router: Router) {
+    this.fetchMatches();
+  }
+
+
+  fetchMatches() {
+    this.matchesService.getAll().subscribe((ms: Match[] ) => {
+      this.currentMatches = ms;
+    });
+  }
+
+  createNewMatch() {
+    this.matchesService.create(this.newMatchName).subscribe((m: Match) => {
+      this.router.navigate(['/match/' + m.id]);
+    });
+  }
+
+  startJoinMatch() {
+    this.matchesService.get(this.joinMatchName).subscribe((m: Match) => {
+      this.joiningMatch = m;
+    });   
+  }
+
+  joinMatch(seatId: number) {
+    this.matchesService.join(this.joinMatchName, seatId).subscribe((m: Match) => {
+      this.router.navigate(['/match/' + m.id]);
+    });
   }
 
 }

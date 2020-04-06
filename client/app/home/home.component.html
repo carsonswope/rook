@@ -5,11 +5,43 @@
   <div class="custom-div">
     Welcome to rook
   </div>
+
+  <username-widget></username-widget>
+
   <div>
-    <button>Create game</button>
-    <button>Join game</button>
+	<input type="text" [(ngModel)]="newMatchName">
+	<button (click)="createNewMatch()" 
+	 		[disabled]="!newMatchName">
+		create match
+	</button>
+  </div>
+  <div>
+	<input type="text" [(ngModel)]="joinMatchName">
+	<button (click)="startJoinMatch()" [disabled]="!joinMatchName">
+		join match
+	</button>
+	<div *ngIf="joiningMatch">
+		<div *ngFor="let seatId of [0, 1, 2, 3]">
+			Seat {{seatId}}:
+			<button (click)="joinMatch(seatId)" *ngIf="!joiningMatch.players[seatId]">
+				Sit here
+			</button>
+			<span *ngIf="joiningMatch.players[seatId]">
+				{{joiningMatch.players[seatId]}}
+			</span>
+		</div>
+		<button (click)="joiningMatch = null;">cancel</button>
+	</div>
+  </div>
+  <div>
+  	current matches you are playing in:
+  	<div *ngFor="let match of currentMatches">
+  		<div><b>Match name: {{match.id}}</b> - Other players: {{match.players.join(', ')}}
+  		<button [routerLink]="'match/' + match.id">return to match</button>
+  		<button>quit match</button>
+  	    </div>
+  	</div>
   </div>
 
-    <username-widget></username-widget>
   
 </div>

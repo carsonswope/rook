@@ -2,8 +2,11 @@ import * as express from 'express';
 
 import Ctrl from './endpoints/abc';
 import Randomname from './endpoints/randomname';
+import MatchController from './endpoints/matchcontroller';
 
-import { USERNAME_COOKIE } from './shared/Constants'
+import { USERNAME_COOKIE } from './shared/Constants';
+
+import { RookDatabase } from './database';
 
 // read username from cookie and write to request context
 function getUsernameFromCookie(req, res, next) {
@@ -30,8 +33,17 @@ function verifyUsername(req, res, next) {
 function setRoutes(app) {
   const router = express.Router();
 
+  const db = new RookDatabase();
+
   const ctrl = new Ctrl();
   const randomname = new Randomname();
+
+  const matchCtrl = new MatchController(db);
+
+  router.route('/matches').get(verifyUsername, matchCtrl.getAll);
+  router.route('/matches').post(verifyUsername, matchCtrl.create);
+  router.route('/join_match').post(verifyUsername, matchCtrl.join);
+  router.route('/match/:matchId').get(verifyUsername, matchCtrl.get);
 
   router.route('/abc').get(verifyUsername, ctrl.getAbc);
   router.route('/randomname').get(randomname.getRandomname);

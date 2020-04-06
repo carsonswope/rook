@@ -9,17 +9,20 @@ import { AppRoutingModule } from './app-routing.module';
 
 // Services
 import { UsernameService } from './services/username.service';
+import { MatchesService } from './services/matches.service';
 
 // Components
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { UsernameComponent } from './username/username.component';
+import { MatchComponent } from './match/match.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     UsernameComponent,
+    MatchComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -30,6 +33,7 @@ import { UsernameComponent } from './username/username.component';
   ],
   providers: [
     UsernameService,
+    MatchesService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

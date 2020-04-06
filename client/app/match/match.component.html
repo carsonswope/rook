@@ -1,0 +1,28 @@
+<div>
+	<a [routerLink]="'/'">back to home!</a>
+	<div>
+		welcome to the match component
+	</div>
+	<div *ngIf="match"> 
+	  match: {{match.id}}<br>
+ 	  players:
+  	  <div *ngFor="let player of match.players">
+  	    -- {{player}}
+  	  </div>
+  	  <div *ngIf="matchObserver()">
+	  		you are observing this match
+
+
+  	  </div>
+
+  	  <div *ngIf="matchPlayer()">
+  	  		you are playing in the match!
+
+
+  	  </div>
+	</div>
+	<div>
+
+	</div>
+
+</div>

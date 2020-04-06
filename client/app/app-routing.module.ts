@@ -4,9 +4,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Components
 import { HomeComponent } from './home/home.component';
+import { MatchComponent } from './match/match.component';
 
 
 const routes: Routes = [
+  { path: 'match/:matchId', component: MatchComponent},
   { path: '', component: HomeComponent },
   { path: '**', redirectTo: '' },
 ];
