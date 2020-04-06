@@ -32,6 +32,9 @@ enum GAME_STAGE {
 export class GameState {
 
 	gameStage: GAME_STAGE = GAME_STAGE.BIDDING;
+	score: number[] = [0, 0];
+
+	hand: number[];
 
 	// populated if game state < done
 	currentTurn: number;
@@ -47,6 +50,7 @@ export class GameState {
 	// populated if game stage == bidding, & bidTaker == current user
 	kitty: number[];
 
+	// rest of it (current trick) to fill in later
 }
 
 enum MOVE_TYPE {
@@ -81,16 +85,13 @@ export class Game {
 
 	moves: Move[] = [];
 
-	//playMove()
-
 	getGameState(playerId: number): GameState {
-		// initialize GameState..
 		let gs = new GameState();
 		gs.gameStage = GAME_STAGE.BIDDING;
 		gs.currentTurn = this.dealer + 1;
 
 		this.moves.forEach(m => {
-
+			// make sure move is valid? or don't bother at this point?
 		})
 
 		return gs;
