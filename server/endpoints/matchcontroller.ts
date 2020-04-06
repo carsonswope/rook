@@ -66,7 +66,8 @@ class MatchController {
     if (!m.readyToStart()) {
       return res.status(400);
     }
-    const g = this.d.createGame();
+    // start match == create first game of match. dealer for first match is player 0
+    const g = this.d.createGame(0);
     m.gameIds = [g.id];
 
     return res.status(200).json(m);

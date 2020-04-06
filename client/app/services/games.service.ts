@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpResponse } from '@angular/common/http'
 
-import { Game } from '../../../server/shared/CoreGame'
+import { GameState } from '../../../server/shared/CoreGame'
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,18 +11,18 @@ export class GamesService {
 
     // copy constructor. Call this to have access to member functions, which don't get
     // copied over the wire
-    static copy(g: Game): Game {
-      let gNew = new Game();
-      gNew.id = g.id;
-      return gNew;
-    }
+    //static copy(g: GameState): GameState {
+    //  let gNew = new GameState();
+    //  gNew.id = g.id;
+    //  return gNew;
+    //}
 
     constructor(private http: HttpClient) {}
 
-    getAllForMatch(matchId: string): Observable<Game[]> {
+    getAllForMatch(matchId: string): Observable<GameState[]> {
       return this.http
-          .get<Game[]>('/api/match/' + matchId +'/games', {observe: 'response'})
-          .pipe(map((gs: HttpResponse<Game[]>) => gs.body.map(g => GamesService.copy(g))));
+          .get<GameState[]>('/api/match/' + matchId +'/games', {observe: 'response'})
+          .pipe(map((gs: HttpResponse<GameState[]>) => gs.body.map(g => g)));
     }
 
 }
