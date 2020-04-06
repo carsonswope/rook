@@ -9,17 +9,28 @@
   	  <div *ngFor="let player of match.players">
   	    -- {{player}}
   	  </div>
-  	  <div *ngIf="matchObserver()">
+  	  <div *ngIf="!isPlayer()">
 	  		you are observing this match
-
-
   	  </div>
 
-  	  <div *ngIf="matchPlayer()">
-  	  		you are playing in the match!
-
-
+  	  <div *ngIf="isPlayer()">
+  	  	you are playing in the match!
+  	  	<div *ngIf="isOwner()">
+  	  		you are the owner of this match!
+  	  		<div *ngIf="match.readyToStart()">
+  	  			all players have joined. <br>
+  	  			<button (click)="startMatch()">begin game</button>
+  	  		</div>
+  	  	</div>
+  	  	<div>
+  	  	</div>
   	  </div>
+
+	  <div *ngIf="match.started()">
+  	  			match has begun!!!
+  	  		{{match.gameIds[0]}}	
+		</div>
+
 	</div>
 	<div>
 

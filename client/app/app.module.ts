@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 // Services
 import { UsernameService } from './services/username.service';
 import { MatchesService } from './services/matches.service';
+import { GamesService } from './services/games.service';
 
 // Components
 import { AppComponent } from './app.component';
@@ -34,6 +35,7 @@ import { MatchComponent } from './match/match.component'
   providers: [
     UsernameService,
     MatchesService,
+    GamesService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

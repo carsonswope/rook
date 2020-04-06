@@ -1,5 +1,3 @@
-// import { RandomnameResponse } from '../shared/RandomnameResponse';
-//import 
 import { RookDatabase } from '../database';
 import { Match } from '../shared/CoreGame';
 
@@ -39,9 +37,6 @@ class MatchController {
   	const seatId: number = req.body.seatId;
   	const username: string = req.username;
 
-  	console.log(seatId);
-  	console.log(this.d.matches[0].players)
-
   	// fortunately this appears to be a reference! we can just mutate it and it is changed in the 'DB'
   	const m = this.d.getMatch(matchId);
   	if (!m) {
@@ -53,12 +48,28 @@ class MatchController {
 
   	m.players[seatId] = username;
 
-  	console.log('joined!!');
-  	console.log(this.d.matches[0].players)
-
-
   	return res.status(200).json(m);
+  }
 
+  start = (req, res) => {
+    // note that this isn't type safe at all right now. We could create a shared MatchCreateRequestPayload... but fuck it
+    const matchId = req.body.matchId;
+    const username: string = req.username;
+
+    const m = this.d.getMatch(matchId);
+    if (!m) {
+      return res.sendStatus(404);
+    }
+    if (m.players[0] != username) {
+      return res.status(403);
+    }
+    if (!m.readyToStart()) {
+      return res.status(400);
+    }
+    const g = this.d.createGame();
+    m.gameIds = [g.id];
+
+    return res.status(200).json(m);
   }
   
   quit = (req, res) => {

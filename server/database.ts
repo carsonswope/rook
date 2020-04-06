@@ -1,7 +1,9 @@
-import { Match } from './shared/CoreGame'
+import { Match, Game } from './shared/CoreGame'
 
 export class RookDatabase {
 	matches: Match[] = [];
+
+	games: Map<string, Game> = new Map();
 
 	// silly reproductions of what a relational DB might do.
 	// if this gets too out of hand maybe look at sqlite?
@@ -26,11 +28,10 @@ export class RookDatabase {
 		let m = new Match();
 		m.id = id;
 		m.players[0] = playerId;
-		m.started = false;
 		this.matches.push(m);
 		return m;
 	}
-	
+
 	deleteMatch(id: string): Boolean {
 		const m = this.getMatch(id);
 		if (!m){
@@ -40,4 +41,14 @@ export class RookDatabase {
 		this.matches.splice(i,1);
 		return true;
 	}
+
+	createGame(): Game {
+		const g = new Game();
+		this.games.set(g.id, g);
+		// this.games[g.id] = g;
+		return g;
+	}
+
+
+// >>>>>>> Stashed changes
 }
