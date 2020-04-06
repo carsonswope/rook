@@ -47,6 +47,12 @@ export class HomeComponent {
       this.joiningMatch = m;
     });   
   }
+  
+  quitMatch(matchId: string) {
+	this.matchesService.quit(matchId).subscribe((m:Match) => {
+	  //console.log(s);
+	});
+  }
 
   joinMatch(seatId: number) {
     this.matchesService.join(this.joinMatchName, seatId).subscribe((m: Match) => {

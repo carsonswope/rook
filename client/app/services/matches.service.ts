@@ -35,6 +35,10 @@ export class MatchesService {
           .pipe(map((m: HttpResponse<Match>) => { return m.body }));
     }
     
-
+	quit(matchId: string): Observable<Match> {
+		return this.http
+		  .post<Match>('/api/quit_match', {matchId: matchId}, {observe: 'response'})
+		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
+	}
 
 }

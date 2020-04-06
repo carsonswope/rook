@@ -59,6 +59,38 @@ class MatchController {
   	return res.status(200).json(m);
 
   }
+  
+  quit = (req, res) => {
+	const matchId: string = req.body.matchId;
+	const username: string = req.username;
+	
+	// fortunately this appears to be a reference! we can just mutate it and it is changed in the 'DB'
+	const m = this.d.getMatch(matchId);
+	if (!m) {
+		console.log('no match with matchId ')
+		console.log(matchId);
+		return res.sendStatus(404);
+	}
+	if (!m.players.includes(username)) {
+		return res.sendStatus(400);
+	}
+	
+	console.log('removing ' + username + ' from ' + matchId);
+	var another_player = false; //if there is another player, we don't need to delete the match afterward
+	for (var seatId = 0; seatId < 4; seatId++){
+		if (m.players[seatId] == username){
+			m.players[seatId] == null;
+		}
+		else if (m.players[seatId] != null){
+			another_player = true;
+		}
+	}
+	if (!another_player){
+		this.d.deleteMatch(matchId);
+	}
+	
+	return res.status(200).send('left ' + matchId);
+  }
 
 }
 

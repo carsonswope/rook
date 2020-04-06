@@ -30,6 +30,14 @@ export class RookDatabase {
 		this.matches.push(m);
 		return m;
 	}
-
-
+	
+	deleteMatch(id: string): Boolean {
+		const m = this.getMatch(id);
+		if (!m){
+			return false;
+		}
+		const i = this.matches.indexOf(m);
+		this.matches.splice(i,1);
+		return true;
+	}
 }

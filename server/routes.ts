@@ -43,6 +43,7 @@ function setRoutes(app) {
   router.route('/matches').get(verifyUsername, matchCtrl.getAll);
   router.route('/matches').post(verifyUsername, matchCtrl.create);
   router.route('/join_match').post(verifyUsername, matchCtrl.join);
+  router.route('/quit_match').post(verifyUsername, matchCtrl.quit);
   router.route('/match/:matchId').get(verifyUsername, matchCtrl.get);
 
   router.route('/abc').get(verifyUsername, ctrl.getAbc);
