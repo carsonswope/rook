@@ -42,8 +42,10 @@ export class RookDatabase {
 		return true;
 	}
 
-	createGame(): Game {
+	// gameId: 0-indexed, which number game in the match is it
+	createGame(gameId: number): Game {
 		const g = new Game();
+		g.dealer = gameId % 4;
 		this.games.set(g.id, g);
 		return g;
 	}

@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatchesService } from '../services/matches.service'
 import { GamesService } from '../services/games.service'
 import { UsernameService } from '../services/username.service'
-import { Match, Game } from '../../../server/shared/CoreGame';
+import { Match, GameState } from '../../../server/shared/CoreGame';
 
 import { timer } from 'rxjs/observable/timer';
 import { concatMap, map, tap } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class MatchComponent implements OnDestroy {
   matchId: string;
   match: Match;
   userId: string;
-  games: Game[] = [];
+  games: GameState[] = [];
 
   pollInterval = 1000; // poll every 1 second!
   pollTimerSubscription: Subscription; // handle to the 'subscription', so we can cancel when we want
@@ -44,11 +44,7 @@ export class MatchComponent implements OnDestroy {
     this.pollTimerSubscription = 
       timer(0, this.pollInterval)
           .pipe(concatMap(_ => fetchCall))
-          // .pipe(concatMap(_ => this.matchesService.get(this.matchId)))
           .subscribe((out) => {
-            // let m: Match = out[0];
-            // let gs: Game[] = out[1];
-
             this.match = out[0];
             this.games = out[1]
           }, (e) => {
@@ -56,9 +52,6 @@ export class MatchComponent implements OnDestroy {
             console.log(e);
           })
   }
-
-
-
 
   ngOnDestroy() /*override :)*/ {
     this.pollTimerSubscription.unsubscribe();
