@@ -1,28 +1,30 @@
-<div class="card" style="font-size:20px;left:{{position*6+1}}em;">
-	<div *ngIf="hidden==false; else hiddenBlock">
-	  <div class="front">
-		<div class="content">
-		  <div class={{cardColor}} class="top">
-		  {{cardVal}}
-		  </div>
-		  <div *ngIf="cardColor!='rook'; else rookBlock">
-		  <div class={{cardColor}} class="middle">
-		  {{cardVal}}
-	      </div>
-		  </div>
-		  <ng-template #rookBlock>
-		  <div class={{cardColor}} class="middle">
-		  <img src="../../assets/rook_front.png">
-		  </div>
-		  </ng-template>
-		  <div class={{cardColor}} class="bottom">
-		  {{cardVal}}
+<div class="hand">
+	<div class="card">
+		<div *ngIf="hidden==false; else hiddenBlock">
+		  <div class="front">
+			<div class="content">
+			  <div class={{cardColor}} class="top">
+			  {{cardVal}}
+			  </div>
+			  <div *ngIf="cardColor!='rook'; else rookBlock">
+			  <div class={{cardColor}} class="middle">
+			  {{cardVal}}
+			  </div>
+			  </div>
+			  <ng-template #rookBlock>
+			  <div class={{cardColor}} class="middle">
+			  <img src="../../assets/rook_front.png">
+			  </div>
+			  </ng-template>
+			  <div class={{cardColor}} class="bottom">
+			  {{cardVal}}
+			  </div>
+			</div>
 		  </div>
 		</div>
-	  </div>
+		<ng-template #hiddenBlock>
+		  <div class="back">
+		  </div>
+		</ng-template>
 	</div>
-	<ng-template #hiddenBlock>
-	  <div class="back">
-	  </div>
-	</ng-template>
 </div>
