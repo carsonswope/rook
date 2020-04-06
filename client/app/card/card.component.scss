@@ -2,7 +2,6 @@
   font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin:1em;
   position:absolute;
-  font-size: 20px;
   height:8em;
   width:5.6em; //7:10 is roughly how cards are shaped
   color: #000;
@@ -27,7 +26,7 @@
 
 .green {
   text-align: left;
-  position::absolute;
+  position:absolute;
   color: #0a0;
   width:100%;
   height:100%;
@@ -41,7 +40,7 @@
 
 .red {
   text-align: left;
-  position::absolute;
+  position:absolute;
   color: #a00;
   width:100%;
   height:100%;
@@ -55,7 +54,7 @@
 
 .yellow {
   text-align: left;
-  position::absolute;
+  position:absolute;
   color: #aa0;
   width:100%;
   height:100%;
@@ -69,7 +68,7 @@
 
 .black {
   text-align: left;
-  position::absolute;
+  position:absolute;
   color: #111;
   width:100%;
   height:100%;
@@ -79,6 +78,14 @@
   position:absolute;
   font-size:80%;
   content: " BLACK"; 
+}
+
+.rook {
+  text-align: left;
+  position:absolute;
+  color: #111;
+  width:100%;
+  height:100%;
 }
 
 .middle {
@@ -93,6 +100,11 @@
  text-align:center;
  transform:translate(-50%,-50%);
 }
+
+.middle.rook {
+ content:url("../../assets/rook_front.png")
+}
+
 .middle::after{
   content: none;
 }
@@ -101,7 +113,7 @@
  position:absolute;
  width:100%;
  height:100%;
- content:url("../client/assets/rook_back.jpg");
+ content:url("../../assets/rook_back.jpg");
 }
 
 .top

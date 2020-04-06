@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { UsernameComponent } from './username/username.component';
 import { MatchComponent } from './match/match.component'
+import { CardComponent } from './card/card.component'
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { MatchComponent } from './match/match.component'
     HomeComponent,
     UsernameComponent,
     MatchComponent,
+	CardComponent
   ],
   imports: [
     AppRoutingModule,
