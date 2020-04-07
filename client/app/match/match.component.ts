@@ -26,6 +26,8 @@ export class MatchComponent implements OnDestroy {
   userId: string;
   selectedCard: number;
   games: GameState[] = [];
+  discardCards: number[]; //only used during the discard stage!
+  smushCards: Boolean;
 
   pollInterval = 1000; // poll every 1 second!
   pollTimerSubscription: Subscription; // handle to the 'subscription', so we can cancel when we want
@@ -39,6 +41,7 @@ export class MatchComponent implements OnDestroy {
     this.userId = this.usernameService.getUsername();
     this.matchId = this.activatedRoute.snapshot.params.matchId;
 	this.selectedCard = -1;
+    this.smushCards = false;
 
     const fetchCall = forkJoin(this.matchesService.get(this.matchId), this.gamesService.getAllForMatch(this.matchId));
 
@@ -121,12 +124,26 @@ export class MatchComponent implements OnDestroy {
   }
   
   select(card){
-	 if (card == this.selectedCard) {
-		 this.selectedCard = -1;
-	 }
-	 else {
-		 this.selectedCard = card;
-	 }
+     if (this.getGameStage()==2){
+         if (this.discardCards.includes(card)){
+             this.discardCards.splice(this.discardCards.indexOf(card),1);
+         }
+         else {
+             if (this.discardCards.length < 5){
+                 if (!this.discardCards.includes(card)){
+                     this.discardCards.push(card);
+                 }
+             }
+         }
+     }
+     else if (this.getGameStage()==3){
+         if (card == this.selectedCard) {
+             this.selectedCard = -1;
+         }
+         else {
+             this.selectedCard = card;
+         }
+     }
   }
   
 }

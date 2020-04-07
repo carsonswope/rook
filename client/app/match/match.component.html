@@ -35,7 +35,7 @@
                 <div *ngFor="let id of [1,2,3]">
                   <div class="{{['left','across','right'][id-1]}}">
                     <div class="{{['left_hand','across_hand','right_hand'][id-1]}}">
-                      <card-component *ngFor="let card of getHandRelative(2)" [cardId]="card" [smush]=true></card-component> 
+                      <card-component *ngFor="let card of getHandRelative(id)" [cardId]="card" [smush]=true></card-component> 
                     </div>
                     <div class="playerName">
                       {{getPlayerName(id)}}
@@ -47,10 +47,16 @@
                 </div>
                 <div class="your">
                   <div class="your_hand">
-                    <card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" [smush]=false (click)="whoseTurn()==userId && select(card)"></card-component>  
+                    <card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" [smush]=smushCards (click)="whoseTurn()==userId && select(card)"></card-component>  
                   </div>
                 </div>
             </div>
+            <button *ngIf="!smushCards" (click)="smushCards=true">
+            Smush Cards
+            </button>
+            <button *ngIf="smushCards" (click)="smushCards=false">
+            UnSmush Cards
+            </button>
         </div>
 
 	</div>
