@@ -5,10 +5,12 @@
 	</div>
 	<div *ngIf="match"> 
 	  match: {{match.id}}<br>
- 	  players:
-  	  <div *ngFor="let player of match.players">
-  	    -- {{player}}
-  	  </div>
+      <div *ngIf="!match.started()">
+          players:
+          <div *ngFor="let player of match.players">
+            -- {{player}}
+          </div>
+      </div>
   	  <div *ngIf="!isPlayer()">
 	  		you are observing this match
   	  </div>
@@ -29,9 +31,6 @@
 	  <div *ngIf="match.started()">
   	  			match has begun!!!
   	  		{{match.gameIds[0]}}
-            <div *ngIf="getGameStage()==1">
-                Bidding
-            </div>
              <div class ="gameBoard">
                 <div *ngFor="let id of [1,2,3]">
                   <div class="{{['left','across','right'][id-1]}}">
@@ -45,25 +44,7 @@
                       {{getPlayerInfo(id)}}
                     </div>
                   </div>
-                  
                 </div>
-                <!--<div class="left">
-                  <div class="left_hand">
-                  <card-component *ngFor="let card of getHandRelative(1)" [cardId]="card" [smush]=true></card-component> 
-                  </div>
-                </div>
-                <div class="right">
-                  <div class="right_hand">
-                    <card-component *ngFor="let card of getHandRelative(3)" [cardId]="card" [smush]=true></card-component> 
-                  </div>
-                  <div class="playerName">
-                  {{getPlayerName(3)}}
-                  </div>
-                  <div class="playerInfo">
-                  {{getPlayerInfo(3)}}
-                  </div>
-                  
-                </div>-->
                 <div class="your">
                   <div class="your_hand">
                     <card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" [smush]=false (click)="whoseTurn()==userId && select(card)"></card-component>  

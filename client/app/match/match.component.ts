@@ -86,6 +86,9 @@ export class MatchComponent implements OnDestroy {
           if (this.games[this.games.length-1].passed.includes(relativeNumber)){
               return "PASSED";
           }
+          if (this.games[this.games.length-1].currentWinningPlayer==relativeNumber){
+              return this.games[this.games.length-1].currentBid.toString();
+          }
       }
       return "";
   }
