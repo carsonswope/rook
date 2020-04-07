@@ -13,6 +13,7 @@ export class CardComponent {
   @Input('cardId') cardId: number;
   @Input('hidden') hidden: Boolean;
   @Input('selected') selected: Boolean;
+  @Input('smush') smush: Boolean;
   cardVal: string;
   cardColor: string;
   points: number;
@@ -25,14 +26,15 @@ export class CardComponent {
 	this.cardColor = 'N/A';
 	this.selected = false;
     this.points = 0;
+    this.smush = false;
   }
   
   ngOnInit() {
     this.hidden = (this.cardId == -1);
     if (this.hidden) return;
-	const colors = ['green','red','black','yellow','rook'];
+	const colors = ['green','red','yellow','black','rook'];
 	this.cardColor = colors[Math.floor(this.cardId / 14)];
-	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : ((this.cardId+1) % 14 + 1).toString(); 
+	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : (((this.cardId+1) % 14 + 1).toString()); 
     if (this.cardVal=='ROOK') this.points = 20;
     if (this.cardVal=='1') this.points = 15;
     if (this.cardVal=='14' || this.cardVal=='10') this.points = 10;

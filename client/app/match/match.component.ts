@@ -70,15 +70,31 @@ export class MatchComponent implements OnDestroy {
     return this.isPlayer() && this.match.players[0] == this.userId;
   }
   
-  getPlayerRelative(num: number): string {
+  getPlayerName(num: number): string {
       return this.match.players[(this.playerIndex()+num)%4];
+  }
+  
+  getPlayerInfo(num: number): string {
+      const playerName = this.getPlayerName(num);
+      const relativeNumber=(this.playerIndex()+num)%4;
+      if (this.whoseTurn()==playerName){
+          if (this.getGameStage()==1){
+              return "BIDDING";
+          }
+      }
+      if (this.getGameStage()==1){
+          if (this.games[this.games.length-1].passed.includes(relativeNumber)){
+              return "PASSED";
+          }
+      }
+      return "";
   }
   
   whoseTurn(): string {
       return this.match.players[this.games[this.games.length-1].currentTurn];
   }
   
-  getGameStage(): GAME_STAGE {
+  getGameStage(): number {
       return this.games[this.games.length-1].gameStage;
   }
   
@@ -94,7 +110,9 @@ export class MatchComponent implements OnDestroy {
       console.log(e);
     })
   }
-  
+  getHandRelative(num: number): number[] {
+     return this.games[this.games.length-1].hands[(this.playerIndex()+num)%4];
+  }
   getHand(): number[] {
 	 return this.games[this.games.length-1].hands[this.playerIndex()];
   }

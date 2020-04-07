@@ -1,4 +1,4 @@
-<div class="card" class="{{selected ? 'selected' : ''}}">
+<div class="card" class="{{(selected ? 'selected' : '') + (smush ? 'smush' : '')}}">
 	<div *ngIf="hidden==false; else hiddenBlock">
 	  <div class="front">
 		
@@ -9,7 +9,7 @@
                 {{points}}
             </div>
 		  </div>
-		  <div *ngIf="cardColor!='rook'; else rookBlock">
+		  <div *ngIf="cardColor!='ROOK'; else rookBlock">
             <div class={{cardColor}} class="middle">
                 {{cardVal}}
             </div>
