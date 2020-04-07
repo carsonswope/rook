@@ -22,27 +22,20 @@ class GameController {
 
   playMove = (req, res) => {
 
-    console.log('play move!');
-    // console.log(req.body.matchId);
-
     const match = this.d.getMatch(req.body.matchId);
-    // console.log(match);
     if (!match) {
       return res.sendStatus(404);
     }
     const gameId = req.body.gameId;
-    // console.log(gameId);
     if (!match.gameIds.includes(gameId)) {
       return res.sendStatus(404);
     }
     const playerId = match.players.indexOf(req.username);
-    // console.log(playerId);
     if (playerId == -1) {
       return res.sendStatus(403);
     }
 
     const game = this.d.games.get(gameId);
-    // console.log(game);
     if (!game) {
       return res.sendStatus(404);
     }
@@ -54,8 +47,6 @@ class GameController {
       return res.sendStatus(400);
     }
 
-    // console.log(gameState);
-    // console.log(move);
     game.moves.push(move);
     gameState = game.getGameState(playerId);
 

@@ -26,6 +26,11 @@ Function get($params) {
 	-WebSession $s
 }
 
+Function getGameState($username) {
+  'Game state for ' + $username
+  return get($username, '/api/match/goodgame/games')
+}
+
 $u1 = 'swope'
 $u2 = 'p2'
 $u3 = 'p3'
@@ -39,6 +44,11 @@ $a = post($u4, '/api/join_match', '{"matchId": "goodgame", "seatId":3}')
 $resp = post($u1, '/api/start_match', '{"matchId": "goodgame"}')
 $gameId = $resp.gameIds[0]
 
+getGameState($u1)
+getGameState($u2)
+getGameState($u3)
+getGameState($u4)
+
 $move_body = @{
   matchId='goodgame'
   gameId=$gameId
@@ -49,24 +59,30 @@ $move_body = @{
   }
 post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
 
-# pass!
+# bid 0 == pass
 $move_body.move.bid = 0
-post($u3, '/api/game/move', ($move_body | ConvertTo-Json))
-
+$r = post($u3, '/api/game/move', ($move_body | ConvertTo-Json))
 
 $move_body.move.bid = 25
-post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
 
 $move_body.move.bid = 130
-post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
 
 $move_body.move.bid = 140
-post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
 
 $move_body.move.bid = 0
-post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
 
 $move_body.move.bid = 0
-post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
 
 # bidding concluded!
+getGameState('unknown-user')
+getGameState($u1)
+'kitty should be visible on this one only:'
+getGameState($u2)
+getGameState($u3)
+getGameState($u4)
+

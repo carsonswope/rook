@@ -34,7 +34,9 @@ export class GameState {
 	gameStage: GAME_STAGE = GAME_STAGE.BIDDING;
 	score: number[] = [0, 0];
 
-	hand: number[];
+	// hands for all players! this must be filtered out before
+	// returning to client
+	hands: number[][];
 
 	// populated if game state < done
 	currentTurn: number;
@@ -48,7 +50,7 @@ export class GameState {
 	bidTaker: number; // player ID
 	finalBid: number; // how much the bid was for!
 
-	// populated if game stage == bidding, & bidTaker == current user
+	// populated only if game stage == bidding, & bidTaker == current user
 	kitty: number[];
 
 	isMoveValid(m: Move): boolean {
@@ -147,25 +149,82 @@ export class Move {
 	card: number; // card played!
 }
 
+// https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+const shuffle = (a: number[]) => {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
+
 export class Game {
 	constructor() {
 		this.id = getUUID();
+
+		const deck = 
+			// make sure it's very shuffled :)
+			shuffle(shuffle(shuffle(Array.from(Array(57).keys()))));
+		// console.log(deck.join(', '))
+
+		this.startingHands = [
+			deck.slice(0, 13),
+			deck.slice(13, 26),
+			deck.slice(26, 39),
+			deck.slice(39, 52),
+		];
+		// blasphemy to put the kitty all at the end like that
+		this.startingKitty = deck.slice(52)
+
+		// console.log(this.startingHands.map(m => m.join(', ')));
+		// console.log(this.startingKitty.join(', '));
 	}
+
 
 	id: string = '';
 	dealer: number;
 
 	moves: Move[] = [];
 
+	// players 0-3
+	startingHands: number[][];
+	//
+	startingKitty: number[];
+
 	getGameState(playerId: number): GameState {
 		let gs = new GameState();
 		gs.gameStage = GAME_STAGE.BIDDING;
 		gs.currentTurn = this.dealer + 1;
+		// make copy!
+		gs.hands = [
+			this.startingHands[0].slice(),
+			this.startingHands[1].slice(),
+			this.startingHands[2].slice(),
+			this.startingHands[3].slice(),
+		];
+		gs.kitty = this.startingKitty.slice();
 
-		this.moves.forEach(m => {
-			gs.playMove(m);
-			// make sure move is valid? or don't bother at this point?
-		})
+		// play through game, updating gamestate
+		this.moves.forEach(m => gs.playMove(m));
+
+		// filter hand before returning to client!
+		for (let i =0; i < 4; i++) {
+			if (playerId != i) {
+				gs.hands[i] = gs.hands[i].map(_ => -1);
+			}
+		}
+
+
+		// why is this typecast necessary?
+		if (gs.gameStage as number == GAME_STAGE.DISCARDING 
+			&& playerId == gs.bidTaker) {
+			console.log('show the kitty!')
+		} else {
+			gs.kitty = [-1, -1, -1, -1, -1];
+		}
 
 		return gs;
 	}
