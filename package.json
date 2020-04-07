@@ -10,6 +10,7 @@
     "start": "node dist/server/app.js",
     "predev": "tsc -p server",
     "dev": "concurrently \"ng serve --proxy-config proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
+    "dev-server-only": "concurrently \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
     "prod": "concurrently \"ng build --aot --prod && tsc -p server && node dist/server/app.js\"",
     "lint": "ng lint",
     "linthtml": "htmlhint \"client/**/*.html\"",

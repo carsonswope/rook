@@ -1,4 +1,4 @@
-# Why is Invoke-WebRequest so slow???
+
 
 Function post($params) {
   $username = $params[0]
@@ -7,7 +7,8 @@ Function post($params) {
   $s.Cookies.Add($c)
   $url = $params[1]
   $body = $params[2]
-  return Invoke-RestMethod -uri ('http://localhost:4200' + $url) `
+  # point directly to server! not through whatever dev mode proxy was running at :4200
+  return Invoke-RestMethod -uri ('http://localhost:3000' + $url) `
 	-Body $body `
 	-Method 'POST' `
 	-ContentType 'application/json; charset=utf-8' `
@@ -20,7 +21,7 @@ Function get($params) {
   $c = New-Object System.Net.Cookie('rook_username',$username,'/','localhost')
   $s.Cookies.Add($c)
   $url = $params[1]
-  return Invoke-RestMethod -uri ('http://localhost:4200' + $url) `
+  return Invoke-RestMethod -uri ('http://localhost:3000' + $url) `
 	-Method 'GET' `
 	-ContentType 'application/json; charset=utf-8' `
 	-WebSession $s
@@ -44,10 +45,18 @@ $a = post($u4, '/api/join_match', '{"matchId": "goodgame", "seatId":3}')
 $resp = post($u1, '/api/start_match', '{"matchId": "goodgame"}')
 $gameId = $resp.gameIds[0]
 
-getGameState($u1)
-getGameState($u2)
-getGameState($u3)
-getGameState($u4)
+$r = getGameState($u1)
+'hand '
+$r.hands[0]
+$r = getGameState($u2)
+'hand '
+$r.hands[1]
+$r = getGameState($u3)
+'hand '
+$r.hands[2]
+$r = getGameState($u4)
+'hand '
+$r.hands[3]
 
 $move_body = @{
   matchId='goodgame'
@@ -57,7 +66,7 @@ $move_body = @{
       bid=15
     }
   }
-post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
+$r = post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
 
 # bid 0 == pass
 $move_body.move.bid = 0
@@ -82,7 +91,22 @@ $r = post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
 getGameState('unknown-user')
 getGameState($u1)
 'kitty should be visible on this one only:'
-getGameState($u2)
+$r = getGameState($u2)
+$hand = $r.hands[1]
+$kitty = $r.kitty
+
 getGameState($u3)
 getGameState($u4)
 
+
+$move_body = @{
+  matchId='goodgame'
+  gameId=$gameId
+    move=@{
+      moveType=2 #discard
+      discarded=($hand[0], $hand[1], $hand[4], $hand[7], $hand[8])
+      trump=2 # green red BLACK yellow trump (can't call rook as trump, obviously)
+    }
+  }
+$move_body.move
+post($u2, '/api/game/move', ($move_body | ConvertTo-Json -Depth 2))
