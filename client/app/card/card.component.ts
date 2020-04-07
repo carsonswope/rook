@@ -15,19 +15,28 @@ export class CardComponent {
   @Input('selected') selected: Boolean;
   cardVal: string;
   cardColor: string;
+  points: number;
   
   
 
   constructor() {
-	this.hidden = false;
+	this.hidden = true;
 	this.cardVal = 'N/A';
 	this.cardColor = 'N/A';
 	this.selected = false;
+    this.points = 0;
   }
   
   ngOnInit() {
+    this.hidden = (this.cardId == -1);
+    if (this.hidden) return;
 	const colors = ['green','red','black','yellow','rook'];
 	this.cardColor = colors[Math.floor(this.cardId / 14)];
 	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : ((this.cardId+1) % 14 + 1).toString(); 
+    if (this.cardVal=='ROOK') this.points = 20;
+    if (this.cardVal=='1') this.points = 15;
+    if (this.cardVal=='14' || this.cardVal=='10') this.points = 10;
+    if (this.cardVal=='5') this.points = 5;
+    
   }
 }

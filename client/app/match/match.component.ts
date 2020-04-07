@@ -65,6 +65,23 @@ export class MatchComponent implements OnDestroy {
   isOwner(): boolean {
     return this.isPlayer() && this.match.players[0] == this.userId;
   }
+  
+  getPlayerRelative(num: number): string {
+      const my_pos = this.match.players.indexOf(this.userId);
+      return this.match.players[(my_pos+num)%4];
+  }
+  
+  whoseTurn(): string {
+      return this.match.players[this.games[this.games.length-1].currentTurn];
+  }
+  
+  getGameStage(): GAME_STAGE {
+      return this.games[this.games.length-1].gameStage;
+  }
+  
+  pass() {
+      console.log('clicked pass!');
+  }
 
   startMatch() {
     this.matchesService.start(this.matchId).subscribe((m: Match) => {

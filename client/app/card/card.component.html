@@ -5,19 +5,25 @@
 		<div class="content">
 		  <div class={{cardColor}} class="top">
 		  {{cardVal}}
+            <div *ngIf="points!=0" class="points">
+                {{points}}
+            </div>
 		  </div>
 		  <div *ngIf="cardColor!='rook'; else rookBlock">
-		  <div class={{cardColor}} class="middle">
-		  {{cardVal}}
-		  </div>
+            <div class={{cardColor}} class="middle">
+                {{cardVal}}
+            </div>
 		  </div>
 		  <ng-template #rookBlock>
 		  <div class={{cardColor}} class="middle">
-		  <img src="../../assets/rook_front.png">
+            <img src="../../assets/rook_front.png">
 		  </div>
 		  </ng-template>
 		  <div class={{cardColor}} class="bottom">
-		  {{cardVal}}
+              {{cardVal}}
+              <div *ngIf="points!=0" class="points">
+                {{points}}
+              </div>
 		  </div>
 		</div>
 	  </div>

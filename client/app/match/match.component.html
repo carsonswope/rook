@@ -28,10 +28,31 @@
 
 	  <div *ngIf="match.started()">
   	  			match has begun!!!
-  	  		{{match.gameIds[0]}}	
+  	  		{{match.gameIds[0]}}
+                <div *ngIf="getGameStage()==1">
+                Bidding
+                </div>
+                <div>
+                Left: {{getPlayerRelative(1)}}
+                <div *ngIf="whoseTurn()==getPlayerRelative(1)">
+                {{getPlayerRelative(1)}}'s turn
+                </div>
+                </div>
+                <div>
+                Across: {{getPlayerRelative(2)}}
+                <div *ngIf="whoseTurn()==getPlayerRelative(2)">
+                {{getPlayerRelative(2)}}'s turn
+                </div>
+                </div>
+                <div>
+                Right: {{getPlayerRelative(3)}}
+                <div *ngIf="whoseTurn()==getPlayerRelative(3)">
+                {{getPlayerRelative(3)}}'s turn
+                </div>
+                </div>
 		</div>
 
 	</div>
-	<card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" (click)="select(card)"></card-component>
+	<card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" (click)="whoseTurn()==userId && select(card)"></card-component>
 
 </div>
