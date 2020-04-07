@@ -21,7 +21,7 @@ export class Match {
 }
 
 
-enum GAME_STAGE {
+export enum GAME_STAGE {
 	BIDDING = 1,
 	DISCARDING = 2,
 	PLAYING = 3,
@@ -161,7 +161,8 @@ export class GameState {
 			const cards = new Set([...this.hands[m.playerId], ...this.kitty]);
 			m.discarded.forEach(d => cards.delete(d))
 
-			this.hands[m.playerId] = [...cards];
+			// why do we need to overload the sort operator here? not really sure
+			this.hands[m.playerId] = [...cards].sort((a, b) => a - b);
 
 			this.gameStage = GAME_STAGE.PLAYING;
 			this.kitty = m.discarded.slice(); // copy, now kitty holds the discarded cards!
@@ -217,19 +218,15 @@ export class Game {
 		const deck = 
 			// make sure it's very shuffled :)
 			shuffle(shuffle(shuffle(Array.from(Array(57).keys()))));
-		// console.log(deck.join(', '))
 
 		this.startingHands = [
-			deck.slice(0, 13),
-			deck.slice(13, 26),
-			deck.slice(26, 39),
-			deck.slice(39, 52),
+			deck.slice(0, 13).sort((a, b) => a - b),
+			deck.slice(13, 26).sort((a, b) => a - b),
+			deck.slice(26, 39).sort((a, b) => a - b),
+			deck.slice(39, 52).sort((a, b) => a - b),
 		];
 		// blasphemy to put the kitty all at the end like that
-		this.startingKitty = deck.slice(52)
-
-		// console.log(this.startingHands.map(m => m.join(', ')));
-		// console.log(this.startingKitty.join(', '));
+		this.startingKitty = deck.slice(52).sort((a, b) => a - b);
 	}
 
 
@@ -276,9 +273,4 @@ export class Game {
 
 		return gs;
 	}
-
-	//validMove()
-
-	// this is a server-side function
-	// getGameView(playerId: number /* 0-3 */ ) {  }
 }
