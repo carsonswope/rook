@@ -54,6 +54,10 @@ export class MatchComponent implements OnDestroy {
           })
   }
 
+  playerIndex(): number {
+      return this.match.players.indexOf(this.userId);
+  }
+  
   ngOnDestroy() /*override :)*/ {
     this.pollTimerSubscription.unsubscribe();
   }
@@ -67,8 +71,7 @@ export class MatchComponent implements OnDestroy {
   }
   
   getPlayerRelative(num: number): string {
-      const my_pos = this.match.players.indexOf(this.userId);
-      return this.match.players[(my_pos+num)%4];
+      return this.match.players[(this.playerIndex()+num)%4];
   }
   
   whoseTurn(): string {
@@ -93,7 +96,7 @@ export class MatchComponent implements OnDestroy {
   }
   
   getHand(): number[] {
-	 return [0,3,12,15,16,25,27,28,43,49,50,51,56];
+	 return this.games[this.games.length-1].hands[this.playerIndex()];
   }
   
   select(card){
