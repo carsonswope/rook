@@ -47,10 +47,26 @@ $move_body = @{
       bid=15
     }
   }
-$move_body_json = $move_body | ConvertTo-Json
-$move_body_json
+post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
 
-post($u1, '/api/game/move', $move_body_json)
-post($u3, '/api/game/move', $move_body_json)
-post($u4, '/api/game/move', $move_body_json)
-post($u2, '/api/game/move', $move_body_json)
+# pass!
+$move_body.move.bid = 0
+post($u3, '/api/game/move', ($move_body | ConvertTo-Json))
+
+
+$move_body.move.bid = 25
+post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
+
+$move_body.move.bid = 130
+post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
+
+$move_body.move.bid = 140
+post($u2, '/api/game/move', ($move_body | ConvertTo-Json))
+
+$move_body.move.bid = 0
+post($u4, '/api/game/move', ($move_body | ConvertTo-Json))
+
+$move_body.move.bid = 0
+post($u1, '/api/game/move', ($move_body | ConvertTo-Json))
+
+# bidding concluded!

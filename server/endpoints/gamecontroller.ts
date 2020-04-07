@@ -46,7 +46,7 @@ class GameController {
     if (!game) {
       return res.sendStatus(404);
     }
-    const gameState = game.getGameState(playerId);
+    let gameState = game.getGameState(playerId);
     const move: Move = req.body.move;
     move.playerId = playerId;
 
@@ -55,18 +55,11 @@ class GameController {
     }
 
     // console.log(gameState);
-    console.log(move);
+    // console.log(move);
+    game.moves.push(move);
+    gameState = game.getGameState(playerId);
 
-    return res.status(200).json(true);
-
-
-    //const playerId = match.
-    //const game = this.d.games.get(req.params.gameId);
-    //const gameState = game.getGameState()
-    //const move: Move = req.params.move;
-
-
-
+    return res.status(200).json(gameState);
 
   }
 

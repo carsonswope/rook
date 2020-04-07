@@ -41,6 +41,7 @@ export class GameState {
 
 	// populated if game stage = bidding:
 	currentBid: number = 0;
+	currentWinningPlayer: number = 0;
 	passed: number[] = [];
 
 	// populated if game stage > bidding:
@@ -56,6 +57,65 @@ export class GameState {
 			console.log('Not your turn!');
 			return false;
 		}
+
+		if (this.gameStage == GAME_STAGE.BIDDING) {
+			if (m.moveType != MOVE_TYPE.BID) {
+				console.log('Expecting a bid!')
+				return false;
+			}
+			if (m.bid % 5 != 0) {
+				console.log('Bid must be multiple of 5');
+				return false;
+			}
+			if (m.bid > 0 && m.bid <= this.currentBid) {
+				console.log('Must beat current bid');
+				return false;
+			}
+			if (m.bid == 0 && this.passed.length == 3) {
+				console.log('everyone cant pass!')
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	getNextBidder(): number {
+		let t = (this.currentTurn + 1) % 4;
+		this.currentTurn++;
+		while (this.passed.indexOf(t) > -1) {
+			t++;
+		}
+		return t;
+	}
+
+	playMove(m: Move): boolean {
+		if (!this.isMoveValid(m)) {
+			console.log('move labeled as invalid!');
+			return false;
+		}
+
+		if (m.moveType == MOVE_TYPE.BID) {
+			if (m.bid == 0) {
+				// Pass!
+				this.passed.push(m.playerId);
+				if (this.passed.length == 3) {
+					// 3 players have passed! 
+					this.gameStage = GAME_STAGE.DISCARDING;
+					this.finalBid = this.currentBid;
+					this.bidTaker = this.currentWinningPlayer;
+					this.currentTurn = this.currentWinningPlayer;
+				} else {
+					this.currentTurn = this.getNextBidder();
+				}
+			} else {
+				// bid greater than previous
+				this.currentBid = m.bid;
+				this.currentWinningPlayer = m.playerId;
+				this.currentTurn = this.getNextBidder();
+			}
+		}
+
 
 		return true;
 	}
@@ -103,6 +163,7 @@ export class Game {
 		gs.currentTurn = this.dealer + 1;
 
 		this.moves.forEach(m => {
+			gs.playMove(m);
 			// make sure move is valid? or don't bother at this point?
 		})
 
