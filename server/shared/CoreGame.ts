@@ -53,6 +53,9 @@ export class GameState {
 	// populated only if game stage == bidding, & bidTaker == current user
 	kitty: number[];
 
+	// populated if game stage == playing!
+	trump: number;
+
 	isMoveValid(m: Move): boolean {
 
 		if (m.playerId != this.currentTurn) {
@@ -77,7 +80,37 @@ export class GameState {
 				console.log('everyone cant pass!')
 				return false;
 			}
-		}
+		} else if (this.gameStage == GAME_STAGE.DISCARDING) {
+            if (m.moveType != MOVE_TYPE.DISCARD) {
+                console.log('Expecting a discard!');
+                return false;
+            }
+            if (!(m.trump == 0 || m.trump == 1 || m.trump == 2 || m.trump == 3)) {
+        		console.log('invalid trump');
+        		return false;
+            }
+            if (m.discarded.length != 5 || !m.discarded.every(d => Number.isInteger(d))) {
+            	console.log('must discard 5 cards, integers!');
+            	console.log(m.discarded)
+            	return false
+            }
+            if ([...new Set(m.discarded)].length != 5) {
+            	console.log('no duplicates!')
+            	return false;
+            }
+
+            const discardable = new Set([...this.hands[m.playerId], this.kitty]);
+            if (!m.discarded.every(d => discardable.has(d))) {
+            	console.log('only discard available cards!');
+            	return false;
+            }
+
+
+            // console.log('Valid discard!!');
+            // player must be discarding their own cards
+            // no duplicates
+            //if 
+        }
 
 		return true;
 	}
@@ -107,6 +140,10 @@ export class GameState {
 					this.finalBid = this.currentBid;
 					this.bidTaker = this.currentWinningPlayer;
 					this.currentTurn = this.currentWinningPlayer;
+
+					delete this.currentBid;
+					delete this.currentWinningPlayer;
+					delete this.passed;
 				} else {
 					this.currentTurn = this.getNextBidder();
 				}
@@ -116,7 +153,19 @@ export class GameState {
 				this.currentWinningPlayer = m.playerId;
 				this.currentTurn = this.getNextBidder();
 			}
-		}
+		} else if (m.moveType == MOVE_TYPE.DISCARD) {
+			// don't need to change currentTurn: it will be still the same person's turn
+			// to play the first card!
+			this.trump = m.trump;
+
+			const cards = new Set([...this.hands[m.playerId], ...this.kitty]);
+			m.discarded.forEach(d => cards.delete(d))
+
+			this.hands[m.playerId] = [...cards];
+
+			this.gameStage = GAME_STAGE.PLAYING;
+			this.kitty = m.discarded.slice(); // copy, now kitty holds the discarded cards!
+		} 
 
 
 		return true;
@@ -216,7 +265,6 @@ export class Game {
 				gs.hands[i] = gs.hands[i].map(_ => -1);
 			}
 		}
-
 
 		// why is this typecast necessary?
 		if (gs.gameStage as number == GAME_STAGE.DISCARDING 
