@@ -1,9 +1,5 @@
-.hand {
-  font-size: 18px;
-  display: inline-block;
-}
-
 .card {
+  display: inline-block;
   font-family: 'Times New Roman', Times, serif;
   margin-top:0.1em;
   margin-bottom:0.1em;
@@ -17,6 +13,21 @@
   border-radius: 6px;
   
   -webkit-text-stroke: 0.5px black;
+}
+
+.play {
+  /*display: block;*/
+  position:absolute;
+  top:8.2em;
+  border: 1px solid black;
+  width:50%;
+  text-align:center;
+  margin-left:25%;
+}
+
+.selected {
+  top: -1.2em;
+  height:8.0em;
 }
 
 .front {

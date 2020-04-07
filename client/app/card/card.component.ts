@@ -12,21 +12,22 @@ export class CardComponent {
 
   @Input('cardId') cardId: number;
   @Input('hidden') hidden: Boolean;
-  @Input('position') position: number;
+  @Input('selected') selected: Boolean;
   cardVal: string;
   cardColor: string;
+  
   
 
   constructor() {
 	this.hidden = false;
 	this.cardVal = 'N/A';
 	this.cardColor = 'N/A';
-	this.position = 1;
+	this.selected = false;
   }
   
   ngOnInit() {
 	const colors = ['green','red','black','yellow','rook'];
 	this.cardColor = colors[Math.floor(this.cardId / 14)];
-	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : (this.cardId % 14 + 1).toString(); 
+	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : ((this.cardId+1) % 14 + 1).toString(); 
   }
 }

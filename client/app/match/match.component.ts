@@ -17,13 +17,14 @@ import { forkJoin, of } from 'rxjs';
 @Component({
   selector: 'match-component',
   templateUrl: './match.component.html',
-  // styleUrls: ['./home.component.scss']
+  styleUrls: ['./match.component.scss', '../card/card.component.scss']
 })
 export class MatchComponent implements OnDestroy {
 
   matchId: string;
   match: Match;
   userId: string;
+  selectedCard: number;
   games: GameState[] = [];
 
   pollInterval = 1000; // poll every 1 second!
@@ -37,7 +38,7 @@ export class MatchComponent implements OnDestroy {
 
     this.userId = this.usernameService.getUsername();
     this.matchId = this.activatedRoute.snapshot.params.matchId;
-
+	this.selectedCard = -1;
 
     const fetchCall = forkJoin(this.matchesService.get(this.matchId), this.gamesService.getAllForMatch(this.matchId));
 
@@ -73,9 +74,18 @@ export class MatchComponent implements OnDestroy {
       console.log(e);
     })
   }
-
-
-
-
-
+  
+  getHand(): number[] {
+	 return [0,3,12,15,16,25,27,28,43,49,50,51,56];
+  }
+  
+  select(card){
+	 if (card == this.selectedCard) {
+		 this.selectedCard = -1;
+	 }
+	 else {
+		 this.selectedCard = card;
+	 }
+  }
+  
 }
