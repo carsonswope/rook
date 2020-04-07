@@ -51,6 +51,8 @@ function setRoutes(app) {
   router.route('/match/:matchId').get(verifyUsername, matchCtrl.get);
   router.route('/match/:matchId/games').get(verifyUsername, gameCtrl.getAll);
 
+  router.route('/game/move').post(verifyUsername, gameCtrl.playMove);
+
   router.route('/abc').get(verifyUsername, ctrl.getAbc);
   router.route('/randomname').get(randomname.getRandomname);
 

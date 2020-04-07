@@ -50,6 +50,16 @@ export class GameState {
 	// populated if game stage == bidding, & bidTaker == current user
 	kitty: number[];
 
+	isMoveValid(m: Move): boolean {
+
+		if (m.playerId != this.currentTurn) {
+			console.log('Not your turn!');
+			return false;
+		}
+
+		return true;
+	}
+
 	// rest of it (current trick) to fill in later
 }
 
@@ -59,9 +69,11 @@ enum MOVE_TYPE {
 	PLAY = 3
 }
 
+
 export class Move {
-	// who is playing the move!
-	playerId: number;
+	// who is playing the move! this is calculated on the server,
+	// not part of a move payload from the user
+	playerId: number; 
 	moveType: MOVE_TYPE;
 
 	// if bid:

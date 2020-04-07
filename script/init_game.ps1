@@ -7,7 +7,7 @@ Function post($params) {
   $s.Cookies.Add($c)
   $url = $params[1]
   $body = $params[2]
-  Invoke-WebRequest ('http://localhost:4200' + $url) `
+  return Invoke-RestMethod -uri ('http://localhost:4200' + $url) `
 	-Body $body `
 	-Method 'POST' `
 	-ContentType 'application/json; charset=utf-8' `
@@ -20,7 +20,7 @@ Function get($params) {
   $c = New-Object System.Net.Cookie('rook_username',$username,'/','localhost')
   $s.Cookies.Add($c)
   $url = $params[1]
-  Invoke-WebRequest ('http://localhost:4200' + $url) `
+  return Invoke-RestMethod -uri ('http://localhost:4200' + $url) `
 	-Method 'GET' `
 	-ContentType 'application/json; charset=utf-8' `
 	-WebSession $s
@@ -31,9 +31,26 @@ $u2 = 'p2'
 $u3 = 'p3'
 $u4 = 'p4'
 
-post($u1, '/api/matches', '{"matchId": "goodgame"}')
-post($u2, '/api/join_match', '{"matchId": "goodgame", "seatId":1}')
-post($u3, '/api/join_match', '{"matchId": "goodgame", "seatId":2}')
-post($u4, '/api/join_match', '{"matchId": "goodgame", "seatId":3}')
+$a = post($u1, '/api/matches', '{"matchId": "goodgame"}')
+$a = post($u2, '/api/join_match', '{"matchId": "goodgame", "seatId":1}')
+$a = post($u3, '/api/join_match', '{"matchId": "goodgame", "seatId":2}')
+$a = post($u4, '/api/join_match', '{"matchId": "goodgame", "seatId":3}')
 
-post($u1, '/api/start_match', '{"matchId": "goodgame"}')
+$resp = post($u1, '/api/start_match', '{"matchId": "goodgame"}')
+$gameId = $resp.gameIds[0]
+
+$move_body = @{
+  matchId='goodgame'
+  gameId=$gameId
+    move=@{
+      moveType=1 #bid
+      bid=15
+    }
+  }
+$move_body_json = $move_body | ConvertTo-Json
+$move_body_json
+
+post($u1, '/api/game/move', $move_body_json)
+post($u3, '/api/game/move', $move_body_json)
+post($u4, '/api/game/move', $move_body_json)
+post($u2, '/api/game/move', $move_body_json)
