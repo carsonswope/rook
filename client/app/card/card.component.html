@@ -1,4 +1,4 @@
-<div class="card" class="{{(smush ? 'smush' : '')}}">
+<div class="card" class="{{(smush ? 'smush' : '') + (playable ? ' playable' : '')}}">
 	<div *ngIf="hidden==false; else hiddenBlock">
 	  <div class="front">
 		<div *ngIf="!empty" class="content">

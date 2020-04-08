@@ -56,7 +56,7 @@
                 </div>
                 <div class="your">
                   <div class="your_hand">
-                    <card-component *ngFor="let card of getHand()" [cardId]="card" [smush]=smushCards (click)="whoseTurn()==userId && select(card)"></card-component>  
+                    <card-component *ngFor="let card of getHand()" [cardId]="card" [smush]=smushCards [playable]=isPlayable(card) (click)="whoseTurn()==userId && select(card)"></card-component>  
                   </div>
                 </div>
                 <div *ngIf="getGameStage()==1 && whoseTurn()==userId" class="bidbox">

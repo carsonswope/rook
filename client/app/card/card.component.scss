@@ -3,6 +3,10 @@
   margin-right:-2.0em;
 }
 
+.card.playable {
+	border: 3px solid rgba(0,255,0,128);
+}
+
 .card {
   display: inline-block;
   

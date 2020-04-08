@@ -12,6 +12,7 @@ export class CardComponent {
 
   @Input('cardId') cardId: number;
   @Input('smush') smush: Boolean;
+  @Input('playable') playable: Boolean;
   hidden: Boolean;
   empty: Boolean;
   cardVal: string;
@@ -27,6 +28,7 @@ export class CardComponent {
 	this.cardColor = 'N/A';
     this.points = 0;
     this.smush = false;
+	this.playable = false;
   }
   
   ngOnInit() {

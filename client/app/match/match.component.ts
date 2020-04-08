@@ -102,7 +102,8 @@ export class MatchComponent implements OnDestroy {
           if (this.games[this.games.length-1].passed.includes(relativeNumber)){
               return "PASSED";
           }
-          if (this.games[this.games.length-1].currentWinningPlayer==relativeNumber){
+          if (this.games[this.games.length-1].currentWinningPlayer==relativeNumber && this.games[this.games.length-1].currentBid != 0){
+			  
               return this.games[this.games.length-1].currentBid.toString();
           }
       }
@@ -118,6 +119,7 @@ export class MatchComponent implements OnDestroy {
   }
   
   getBidText(): string {
+	  if (this.games[this.games.length-1].currentBid == 0) return "no bid yet";
       return this.match.players[this.games[this.games.length-1].currentWinningPlayer]
       + " bid "
       + this.games[this.games.length-1].currentBid.toString();
@@ -151,6 +153,28 @@ export class MatchComponent implements OnDestroy {
       move.moveType=1; //BID
       move.bid=0;
       this.move(move);
+  }
+  
+  isPlayable(card: number): Boolean{
+	  if (this.getGameStage()!=3 || this.whoseTurn()!=this.userId) return false;
+	  if (!this.getHand().includes(card)) return false;
+	  if (this.games[this.games.length-1].currentTrick.length==0) return true;
+	  var currentSuit=Math.floor(this.games[this.games.length-1].currentTrick[0]/14);
+	  //Card led was ROOK
+	  if (currentSuit==4) currentSuit=this.games[this.games.length-1].trump;
+	  var thisSuit=Math.floor(card/14);
+	  //Card being checked is ROOK
+	  if (thisSuit==4) thisSuit=this.games[this.games.length-1].trump;
+	  if (currentSuit==thisSuit) return true;
+	  //else check to make sure there are no playable cards in hand
+	  var hand = this.getHand().slice();
+	  if (this.selectedCard != -1) hand.push(this.selectedCard);
+	  for (const card_ of hand){
+		  var cardSuit=Math.floor(card_/14);
+		  if (cardSuit==4) cardSuit=this.games[this.games.length-1].trump;
+		  if (cardSuit==currentSuit) return false;
+	  }
+	  return true;
   }
   
   decreaseBid() {
@@ -280,7 +304,10 @@ export class MatchComponent implements OnDestroy {
      else if (this.getGameStage()==3){
          //we have to click twice, angular isn't updated the card for some reason
          if (this.selectedCard != -1) this.selectedCard = -1;
-         else this.selectedCard = card;
+         else {
+			 if (this.isPlayable(card))
+				this.selectedCard = card;
+		 }
          /*this.selectedCard = card;*/
      }
   }
