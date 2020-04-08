@@ -206,12 +206,17 @@ export class GameState {
 
 			if (this.currentTrick.length == 4) {
 
-				const trumpIdx = this.currentTrick.indexOf(56);
-				if (trumpIdx > -1) {
-					this.currentTrick.forEach(c => this.tricksWon[trumpIdx].push(c));
+				// leader of this trick is 1 person after the last player to play on the trick,
+				// currentTrick is indexed against whoever played the first card
+				const leadPlayer = (m.playerId + 1) % 4;
+
+				const rookIdx = this.currentTrick.indexOf(56);
+				if (rookIdx > -1) {
+					const winningPlayer = (leadPlayer + rookIdx) % 4;
+					this.currentTrick.forEach(c => this.tricksWon[winningPlayer].push(c));
 					this.currentTrick = [];
-					this.currentTrickLeader = trumpIdx;
-					this.currentTurn = trumpIdx;
+					this.currentTrickLeader = winningPlayer;
+					this.currentTurn = winningPlayer;
 				} else {
 
 					const trickHasTrump = 
@@ -219,11 +224,12 @@ export class GameState {
 					let winningSuit = trickHasTrump ? this.trump : this.getSuit(this.currentTrick[0]);
 					let winningCard = -1;
 					let winningPlayer = -1;
+
 					this.currentTrick.forEach((c, i) => {
 						if (this.getSuit(c) == winningSuit) {
 							if (c > winningCard) {
 								winningCard = c;
-								winningPlayer = i;
+								winningPlayer = (leadPlayer + i) % 4;
 							}
 						}						
 					});
