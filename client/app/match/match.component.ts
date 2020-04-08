@@ -24,7 +24,10 @@ export class MatchComponent implements OnDestroy {
   matchId: string;
   match: Match;
   userId: string;
+  
+  //used during the play stage
   selectedCard: number;
+  showLastTrick: Boolean;
   games: GameState[] = [];
   //only used during the discard stage!
   discardCards: number[] = []; 
@@ -62,6 +65,10 @@ export class MatchComponent implements OnDestroy {
 
   playerIndex(): number {
       return this.match.players.indexOf(this.userId);
+  }
+  
+  hideLastTrick() {
+	  this.showLastTrick = false;
   }
   
   ngOnDestroy() /*override :)*/ {
@@ -134,7 +141,7 @@ export class MatchComponent implements OnDestroy {
 	  const final_move : Move = mv;
       this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], final_move).subscribe((gs: GameState) => {
         this.games[this.games.length - 1] = gs;
-      //this.match = m;
+        this.showLastTrick = true;
     }, (e) => {
       console.log('error!');
       console.log(e);
@@ -153,6 +160,16 @@ export class MatchComponent implements OnDestroy {
       move.moveType=1; //BID
       move.bid=0;
       this.move(move);
+  }
+  
+  getLastTrick(): number[] {
+	  return this.games[this.games.length-1].lastTrick;
+  }
+  
+  getLastTrickWinner(): number {
+	  const lastTrickWinner = this.games[this.games.length-1].lastTrickWinner;
+	  if (this.getLastTrick().length==0) return -1;
+	  return (lastTrickWinner + this.playerIndex())%4;
   }
   
   isPlayable(card: number): Boolean{

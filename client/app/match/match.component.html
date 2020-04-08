@@ -53,6 +53,10 @@
 					  <card-component *ngIf="getSelectedCard()!=-1" [cardId]="selectedCard" (click)="select(-1)"></card-component>
 					  <br><button *ngIf="getSelectedCard()!=-1" (click)="playCard()">PLAY</button>
 				  </div>
+				  <div *ngIf="(whoseTurn()!=userId || showLastTrick) && getCurrentTrick().length==0 && getLastTrickWinner()!=-1" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3)%4]}}">
+					  <card-component *ngFor="let card of getLastTrick()" [cardId]="card" [smush]=true></card-component>
+					  <br><button *ngIf="whoseTurn()==userId" (click)="hideLastTrick()">HIDE</button>
+				  </div>
                 </div>
                 <div class="your">
                   <div class="your_hand">
