@@ -45,9 +45,12 @@
                     </div>
                   </div>
                 </div>
-                <div *ngIf="getGameStage()==3 && whoseTurn()==userId && getSelectedCard()!=-1" class="playcardbox">
-                  <card-component [cardId]="selectedCard" (click)="select(-1)"></card-component>
-                  <br><button (click)="playCard()">PLAY</button>
+                <div *ngIf="getGameStage()==3" class="playtable">
+				  <div *ngIf="whoseTurn()==userId">
+					  <p>YOUR TURN</p>
+					  <card-component *ngIf="getSelectedCard()!=-1" [cardId]="selectedCard" (click)="select(-1)"></card-component>
+					  <br><button (click)="playCard()">PLAY</button>
+				  </div>
                 </div>
                 <div class="your">
                   <div class="your_hand">
