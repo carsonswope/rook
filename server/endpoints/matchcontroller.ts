@@ -1,5 +1,5 @@
 import { RookDatabase } from '../database';
-import { Match } from '../shared/CoreGame';
+import { Match, GAME_STAGE } from '../shared/CoreGame';
 
 class MatchController {
 
@@ -51,6 +51,7 @@ class MatchController {
   	return res.status(200).json(m);
   }
 
+  // starts game in match (first or otherwise)
   start = (req, res) => {
     // note that this isn't type safe at all right now. We could create a shared MatchCreateRequestPayload... but fuck it
     const matchId = req.body.matchId;
@@ -61,14 +62,27 @@ class MatchController {
       return res.sendStatus(404);
     }
     if (m.players[0] != username) {
-      return res.status(403);
+      return res.sendStatus(403);
     }
-    if (!m.readyToStart()) {
-      return res.status(400);
+    if (!m.allPlayersJoined()) {
+      console.log('not all players joined!');
+      return res.sendStatus(400);
     }
+    if (m.gameIds.length) {
+      const lastGameId = m.gameIds[m.gameIds.length - 1];
+      const g = this.d.games.get(lastGameId);
+      const gs = g.getGameState(0, false);
+      if (gs.gameStage != GAME_STAGE.DONE) {
+        console.log('must finish previous game before starting new one')
+        return res.sendStatus(400);
+      }
+    }
+    //if (!m.readyToStart()) {
+    //  return res.status(400);
+    //}
     // start match == create first game of match. dealer for first match is player 0
-    const g = this.d.createGame(0);
-    m.gameIds = [g.id];
+    const g = this.d.createGame(m.gameIds.length);
+    m.gameIds.push(g.id);
 
     return res.status(200).json(m);
   }

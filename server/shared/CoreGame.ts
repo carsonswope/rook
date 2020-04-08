@@ -13,13 +13,10 @@ export class Match {
 		return this.gameIds.length > 0;
 	}
 
-	readyToStart(): boolean {
-		return !this.started() && this.players.every(p => p != null);
+	allPlayersJoined(): boolean {
+		return this.players.every(p => p != null);
 	}
-
-
 }
-
 
 export enum GAME_STAGE {
 	BIDDING = 1,
@@ -66,6 +63,15 @@ export class GameState {
 
 	getSuit(c: number): number {
 		return (c == 56) ? this.trump : Math.floor(c / 14)
+	}
+
+	getCardScore(c: number): number {
+		if (c == 56) return 20; // rook
+		const cLocal = c % 14;
+		if (cLocal == 13) return 15; // 1
+		if (cLocal == 12 || cLocal == 8) return 10; // 14, 10
+		if (cLocal == 3) return 5; // 5
+		return 0;
 	}
 
 	isMoveValid(m: Move): boolean {
@@ -139,7 +145,9 @@ export class GameState {
     			//console.log('')
     		}
 
-
+		} else if (this.gameStage == GAME_STAGE.DONE) {
+			console.log('no moves available when game is done!');
+			return false;
 		}
 
 		return true;
@@ -254,6 +262,35 @@ export class GameState {
 					this.currentTurn = winningPlayer;
 				}
 
+				// The game is over!!
+				if (!this.hands[0].length) {
+					// The game is concluded!
+					console.log('game over!!');
+					console.log(this.tricksWon)
+					// per-player scores
+					const scores = 
+						this.tricksWon.map(tricks =>
+							tricks.map(c => this.getCardScore(c))
+								.reduce((t, i) => t + i, 0));
+
+					let scoreTeam1 = scores[0] + scores[2];
+					let scoreTeam2 = scores[1] + scores[3];
+
+					// make sure they made their big!
+					if (this.bidTaker == 0 || this.bidTaker == 2) {
+						if (scoreTeam1 < this.finalBid) {
+							scoreTeam1 = -this.finalBid;
+						}
+					} else {
+						if (scoreTeam2 < this.finalBid) {
+							scoreTeam2 = -this.finalBid;
+						}
+					}
+
+					this.score = [scoreTeam1, scoreTeam2];
+					this.gameStage = GAME_STAGE.DONE;
+				}
+
 			} else {
 				this.currentTurn = (this.currentTurn + 1) % 4;
 			}
@@ -316,6 +353,18 @@ export class Game {
 		];
 		// blasphemy to put the kitty all at the end like that
 		this.startingKitty = deck.slice(52).sort((a, b) => a - b);
+
+		/*
+		// smaller hands for faster e2e testing, if desired
+		this.startingHands = [
+			deck.slice(0, 2).sort((a, b) => a - b),
+			deck.slice(2, 4).sort((a, b) => a - b),
+			deck.slice(4, 6).sort((a, b) => a - b),
+			deck.slice(6, 8).sort((a, b) => a - b),
+		];
+		// blasphemy to put the kitty all at the end like that
+		this.startingKitty = deck.slice(10, 15).sort((a, b) => a - b);
+		*/
 	}
 
 	id: string = '';
