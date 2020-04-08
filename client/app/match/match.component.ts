@@ -48,6 +48,7 @@ export class MatchComponent implements OnDestroy {
     this.matchId = this.activatedRoute.snapshot.params.matchId;
 	this.selectedCard = -1;
     this.smushCards = false;
+	this.showLastTrick = true;
 
     const fetchCall = forkJoin(this.matchesService.get(this.matchId), this.gamesService.getAllForMatch(this.matchId));
 
@@ -262,7 +263,7 @@ export class MatchComponent implements OnDestroy {
       const card1_suit = Math.floor(card1/14);
       const card0_val = card0%14 + ((card0_suit==suit) ? 14 : 0) + ((card0_suit==trump) ? 28 : 0);
       const card1_val = card0%14 + ((card1_suit==suit) ? 14 : 0) + ((card1_suit==trump) ? 28 : 0);
-      return (card0 > card1) ? 0 : 1;
+      return (card0_val > card1_val) ? 0 : 1;
   }
   
   getCurrentWinner(): number {
