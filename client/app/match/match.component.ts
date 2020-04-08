@@ -63,6 +63,10 @@ export class MatchComponent implements OnDestroy {
             console.log(e);
           })
   }
+  totalScore(team: number): number {
+	  let sum = this.games.slice(this.games.length-1).reduce((val: number, game:GameState) => (val + game.score[team]), 0);
+	  return sum;
+  }
 
   playerIndex(): number {
       return this.match.players.indexOf(this.userId);
@@ -143,6 +147,7 @@ export class MatchComponent implements OnDestroy {
       this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], final_move).subscribe((gs: GameState) => {
         this.games[this.games.length-1] = gs;
         this.showLastTrick = true;
+        this.selectedCard=-1;
     }, (e) => {
       console.log('error!');
       console.log(e);
@@ -306,7 +311,6 @@ export class MatchComponent implements OnDestroy {
       move.moveType=3;
       move.card=this.selectedCard;
       this.move(move);
-      this.selectedCard=-1;
   }
   
   getSelectedCard() : number{
@@ -338,6 +342,10 @@ export class MatchComponent implements OnDestroy {
 		 }
          /*this.selectedCard = card;*/
      }
+  }
+  
+  inProgress(): boolean {
+	return this.getGameStage() < 4;
   }
 
   readyToStartMatch(): boolean {

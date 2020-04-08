@@ -28,10 +28,26 @@
   	  	</div>
   	  </div>
 
-	  <div *ngIf="match.started()">
-  	  			match has begun!!!
-  	  		{{match.gameIds[match.gameIds.length-1]}}
-             <div class ="gameBoard">
+	  <div *ngIf="match.started()" style="text-align:center">
+  	  		 Current Game: {{match.gameIds[match.gameIds.length-1]}}
+			 <table class = "scoretable">
+			 <tr>
+				<th>{{match.players[0]}}+{{match.players[2]}}</th>
+				<th>BID</th>
+				<th>{{match.players[1]}}+{{match.players[3]}}</th>
+			 </tr>
+			 <tr *ngFor="let game of games;index as i">
+			    <td>{{((i&lt;games.length-1) ? game.score[0] : '')}}</td>
+				<td>{{(game.bidTaker==0||game.bidTaker==2)? "&larr;" : "\t"}} {{game.finalBid}} {{(game.bidTaker==1||game.bidTaker==3)? "&rarr;" : "\t"}}</td>
+			    <td>{{((i&lt;games.length-1) ? game.score[1] : '')}}</td>
+			 </tr>
+			 <tr *ngIf="games.length > 1" class="sumScore">
+			    <td>{{totalScore(0)}}</td>
+				<td></td>
+				<td>{{totalScore(1)}}</td>
+			 </tr>
+			 </table>
+             <div *ngIf="inProgress(); else gameOverBlock" class ="gameBoard">
                 <div *ngFor="let id of [1,2,3]">
                   <div class="{{['left','across','right'][id-1]}}">
                     <div class="{{['left_hand','across_hand','right_hand'][id-1]}}">
@@ -62,7 +78,14 @@
                 </div>
                 <div class="your">
                   <div class="your_hand">
-                    <card-component *ngFor="let card of getHand()" [cardId]="card" [smush]=smushCards [playable]=isPlayable(card) (click)="whoseTurn()==userId && select(card)"></card-component>  
+                    <card-component *ngFor="let card of getHand()" [cardId]="card" [smush]=smushCards [playable]=isPlayable(card) (click)="whoseTurn()==userId && select(card)"></card-component>
+					<br>
+					<button *ngIf="!smushCards" (click)="smushCards=true">
+					Smush Cards
+					</button>
+					<button *ngIf="smushCards" (click)="smushCards=false">
+					UnSmush Cards
+					</button>					
                   </div>
                 </div>
                 <div *ngIf="getGameStage()==1 && whoseTurn()==userId" class="bidbox">
@@ -78,12 +101,11 @@
                   <button *ngIf="getDiscards()[4]!=-2" (click)="discard()">DISCARD</button>
                 </div>
             </div>
-            <button *ngIf="!smushCards" (click)="smushCards=true">
-            Smush Cards
-            </button>
-            <button *ngIf="smushCards" (click)="smushCards=false">
-            UnSmush Cards
-            </button>
+			<ng-template #gameOverBlock>
+			<div>
+			GAME OVER
+			</div>
+			</ng-template>
         </div>
 
 	</div>
