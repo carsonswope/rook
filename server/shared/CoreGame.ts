@@ -57,7 +57,7 @@ export class GameState {
 
 	lastTrickWinner: number;
 	lastTrickLeader: number;
-	lastTrick: number[];
+	lastTrick: number[] = [];
 
 	tricksWon: number[][]; // 4 arrays containing tricks won by each player
 
