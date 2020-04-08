@@ -255,6 +255,7 @@ export class MatchComponent implements OnDestroy {
       move.moveType=3;
       move.card=this.selectedCard;
       this.move(move);
+      this.selectedCard=-1;
   }
   
   getSelectedCard() : number{

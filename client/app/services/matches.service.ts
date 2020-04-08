@@ -59,7 +59,7 @@ export class MatchesService {
     move(matchId: string, gameId: string, move: Move): Observable<Match> {
         return this.http
           .post<Match>('/api/game/move', {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
-		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
+		  .pipe(map((m: HttpResponse<Match>) => {return MatchesService.copy(m.body); }));
     }
 
 }
