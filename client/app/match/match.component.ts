@@ -107,30 +107,30 @@ export class MatchComponent implements OnDestroy {
           }
       }
       if (this.getGameStage()==1){
-          if (this.games[this.games.length-1].passed.includes(relativeNumber)){
+          if (this.getCurrentGame().passed.includes(relativeNumber)){
               return "PASSED";
           }
-          if (this.games[this.games.length-1].currentWinningPlayer==relativeNumber && this.games[this.games.length-1].currentBid != 0){
+          if (this.getCurrentGame().currentWinningPlayer==relativeNumber && this.getCurrentGame().currentBid != 0){
 			  
-              return this.games[this.games.length-1].currentBid.toString();
+              return this.getCurrentGame().currentBid.toString();
           }
       }
       return "";
   }
   
   whoseTurn(): string {
-      return this.match.players[this.games[this.games.length-1].currentTurn];
+      return this.match.players[this.getCurrentGame().currentTurn];
   }
   
   getGameStage(): number {
-      return this.games[this.games.length-1].gameStage;
+      return this.getCurrentGame().gameStage;
   }
   
   getBidText(): string {
-	  if (this.games[this.games.length-1].currentBid == 0) return "no bid yet";
-      return this.match.players[this.games[this.games.length-1].currentWinningPlayer]
+	  if (this.getCurrentGame().currentBid == 0) return "no bid yet";
+      return this.match.players[this.getCurrentGame().currentWinningPlayer]
       + " bid "
-      + this.games[this.games.length-1].currentBid.toString();
+      + this.getCurrentGame().currentBid.toString();
   }
   
   increaseBid() {
@@ -141,7 +141,7 @@ export class MatchComponent implements OnDestroy {
   move(mv: Move){
 	  const final_move : Move = mv;
       this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], final_move).subscribe((gs: GameState) => {
-        this.games[this.games.length - 1] = gs;
+        this.games[this.games.length-1] = gs;
         this.showLastTrick = true;
     }, (e) => {
       console.log('error!');
@@ -164,11 +164,11 @@ export class MatchComponent implements OnDestroy {
   }
   
   getLastTrick(): number[] {
-	  return this.games[this.games.length-1].lastTrick;
+	  return this.getCurrentGame().lastTrick;
   }
   
   getLastTrickWinner(): number {
-	  const lastTrickWinner = this.games[this.games.length-1].lastTrickWinner;
+	  const lastTrickWinner = this.getCurrentGame().lastTrickWinner;
 	  if (this.getLastTrick().length==0) return -1;
 	  return (lastTrickWinner + this.playerIndex())%4;
   }
@@ -176,20 +176,20 @@ export class MatchComponent implements OnDestroy {
   isPlayable(card: number): Boolean{
 	  if (this.getGameStage()!=3 || this.whoseTurn()!=this.userId) return false;
 	  if (!this.getHand().includes(card)) return false;
-	  if (this.games[this.games.length-1].currentTrick.length==0) return true;
-	  var currentSuit=Math.floor(this.games[this.games.length-1].currentTrick[0]/14);
+	  if (this.getCurrentGame().currentTrick.length==0) return true;
+	  var currentSuit=Math.floor(this.getCurrentGame().currentTrick[0]/14);
 	  //Card led was ROOK
-	  if (currentSuit==4) currentSuit=this.games[this.games.length-1].trump;
+	  if (currentSuit==4) currentSuit=this.getCurrentGame().trump;
 	  var thisSuit=Math.floor(card/14);
 	  //Card being checked is ROOK
-	  if (thisSuit==4) thisSuit=this.games[this.games.length-1].trump;
+	  if (thisSuit==4) thisSuit=this.getCurrentGame().trump;
 	  if (currentSuit==thisSuit) return true;
 	  //else check to make sure there are no playable cards in hand
 	  var hand = this.getHand().slice();
 	  if (this.selectedCard != -1) hand.push(this.selectedCard);
 	  for (const card_ of hand){
 		  var cardSuit=Math.floor(card_/14);
-		  if (cardSuit==4) cardSuit=this.games[this.games.length-1].trump;
+		  if (cardSuit==4) cardSuit=this.getCurrentGame().trump;
 		  if (cardSuit==currentSuit) return false;
 	  }
 	  return true;
@@ -203,8 +203,8 @@ export class MatchComponent implements OnDestroy {
   getYourCurrentBid(): number {
       if (this.getGameStage()==1){
           if (this.yourCurrentBid%5 != 0) this.yourCurrentBid-=this.yourCurrentBid%5;
-          if (this.yourCurrentBid<=this.games[this.games.length-1].currentBid){
-              this.yourCurrentBid = this.games[this.games.length-1].currentBid + 5;
+          if (this.yourCurrentBid<=this.getCurrentGame().currentBid){
+              this.yourCurrentBid = this.getCurrentGame().currentBid + 5;
           }
           if (this.yourCurrentBid > 200) this.yourCurrentBid = 200;
       }
@@ -220,15 +220,15 @@ export class MatchComponent implements OnDestroy {
     });
   }
   getHandRelative(num: number): number[] {
-     return this.games[this.games.length-1].hands[(this.playerIndex()+num)%4];
+     return this.getCurrentGame().hands[(this.playerIndex()+num)%4];
   }
   
   getHand(): number[] {
-      if (this.getGameStage()==2 && this.whoseTurn()==this.userId && this.games[this.games.length-1].bidTaker==this.playerIndex()){
-          const hand = this.games[this.games.length-1].hands[this.playerIndex()].concat(this.games[this.games.length-1].kitty);
+      if (this.getGameStage()==2 && this.whoseTurn()==this.userId && this.getCurrentGame().bidTaker==this.playerIndex()){
+          const hand = this.getCurrentGame().hands[this.playerIndex()].concat(this.getCurrentGame().kitty);
           return hand.filter(card => !this.discardCards.includes(card)).sort((a, b) => a - b);
       }
-      var hand = this.games[this.games.length-1].hands[this.playerIndex()].slice();
+      var hand = this.getCurrentGame().hands[this.playerIndex()].slice();
       if (this.selectedCard != -1) {
           var index = hand.indexOf(this.selectedCard);
           hand.splice(index,1);
@@ -244,20 +244,24 @@ export class MatchComponent implements OnDestroy {
       return tempDiscards;
   }
   
+  getCurrentGame(): GameState {
+	  return this.games[this.games.length-1];
+  }
+  
   getTrump(): string {
-      return ['Green','Red','Yellow','Black'][this.games[this.games.length-1].trump];
+      return ['Green','Red','Yellow','Black'][this.getCurrentGame().trump];
   }
   
   getFinalBidString(): string {
-	  return this.games[this.games.length-1].finalBid.toString() + ' (' + this.match.players[this.games[this.games.length-1].bidTaker] + ')';
+	  return this.getCurrentGame().finalBid.toString() + ' (' + this.match.players[this.getCurrentGame().bidTaker] + ')';
   }
   
     getCurrentTrick(): number[] {
-        return this.games[this.games.length-1].currentTrick;
+        return this.getCurrentGame().currentTrick;
     }
     
   getCurrentTrickLeader(): number {
-      return (this.games[this.games.length-1].currentTrickLeader + 4 - this.playerIndex())%4;
+      return (this.getCurrentGame().currentTrickLeader + 4 - this.playerIndex())%4;
   }
   
   compareCards(card0 : number, card1 : number, trump : number, suit : number) : number{
@@ -271,13 +275,13 @@ export class MatchComponent implements OnDestroy {
   }
   
   getCurrentWinner(): number {
-      if (this.games[this.games.length-1].currentTrick.length==0) return -1;
+      if (this.getCurrentGame().currentTrick.length==0) return -1;
       var winner : number = 0;
-      const suit = Math.floor(this.games[this.games.length-1].currentTrick[0]/14);
-      for (var i : number = 1; i < this.games[this.games.length-1].currentTrick.length; i++){
-          if (this.compareCards(this.games[this.games.length-1].currentTrick[winner],
-          this.games[this.games.length-1].currentTrick[i],
-          this.games[this.games.length-1].trump,
+      const suit = Math.floor(this.getCurrentGame().currentTrick[0]/14);
+      for (var i : number = 1; i < this.getCurrentGame().currentTrick.length; i++){
+          if (this.compareCards(this.getCurrentGame().currentTrick[winner],
+          this.getCurrentGame().currentTrick[i],
+          this.getCurrentGame().trump,
           suit)==1) winner = i;
       }
       return winner;
