@@ -35,7 +35,7 @@ export class UsernameService {
     // }
 
     setUsername(c: string) {
-      this.d.cookie = USERNAME_COOKIE + '=' + c;
+      this.d.cookie = USERNAME_COOKIE + '=' + c + '; path=/';
     }
 
     getUsername(): string {
