@@ -26,7 +26,10 @@ export class MatchComponent implements OnDestroy {
   userId: string;
   selectedCard: number;
   games: GameState[] = [];
-  discardCards: number[]; //only used during the discard stage!
+  //only used during the discard stage!
+  discardCards: number[] = []; 
+  trumpChoice: number = 0;
+  
   smushCards: Boolean;
   yourCurrentBid: number = 0;
   pollInterval = 1000; // poll every 1 second!
@@ -71,6 +74,10 @@ export class MatchComponent implements OnDestroy {
 
   isOwner(): boolean {
     return this.isPlayer() && this.match.players[0] == this.userId;
+  }
+  
+  getTrumpChoice(): string{
+      return ['Green','Red','Yellow','Black'][this.trumpChoice];
   }
   
   getPlayerName(num: number): string {
@@ -160,13 +167,56 @@ export class MatchComponent implements OnDestroy {
     }, (e) => {
       console.log('error!');
       console.log(e);
-    })
+    });
   }
   getHandRelative(num: number): number[] {
      return this.games[this.games.length-1].hands[(this.playerIndex()+num)%4];
   }
+  
   getHand(): number[] {
-	 return this.games[this.games.length-1].hands[this.playerIndex()];
+      if (this.getGameStage()==2 && this.whoseTurn()==this.userId && this.games[this.games.length-1].bidTaker==this.playerIndex()){
+          const hand = this.games[this.games.length-1].hands[this.playerIndex()].concat(this.games[this.games.length-1].kitty);
+          return hand.filter(card => !this.discardCards.includes(card)).sort((a, b) => a - b);
+      }
+      var hand = this.games[this.games.length-1].hands[this.playerIndex()].slice();
+      if (this.selectedCard != -1) {
+          var index = hand.indexOf(this.selectedCard);
+          hand.splice(index,1);
+      }
+	  return hand;
+  }
+  
+  getDiscards(): number[] {
+      const tempDiscards = this.discardCards.slice();
+      while(tempDiscards.length < 5){
+          tempDiscards.push(-2);
+      }
+      return tempDiscards;
+  }
+  
+  cycleTrumpChoice(){
+      this.trumpChoice = (this.trumpChoice + 1)%4;
+  }
+  
+  discard(){
+      if (this.discardCards.length!=5) return;
+      var move: Move = new Move();
+      move.moveType=2; //DISCARD
+      move.discarded = this.discardCards.slice();
+      move.trump=this.trumpChoice;
+      this.move(move);
+  }
+  
+  playCard(){
+      if (this.selectedCard==-1) return;
+      var move: Move = new Move();
+      move.moveType=3;
+      move.card=this.selectedCard;
+      //this.move(move);
+  }
+  
+  getSelectedCard() : number{
+      return this.selectedCard;
   }
   
   select(card){
@@ -181,14 +231,13 @@ export class MatchComponent implements OnDestroy {
                  }
              }
          }
+         console.log(this.discardCards);
      }
      else if (this.getGameStage()==3){
-         if (card == this.selectedCard) {
-             this.selectedCard = -1;
-         }
-         else {
-             this.selectedCard = card;
-         }
+         //we have to click twice, angular isn't updated the card for some reason
+         if (this.selectedCard != -1) this.selectedCard = -1;
+         else this.selectedCard = card;
+         /*this.selectedCard = card;*/
      }
   }
   

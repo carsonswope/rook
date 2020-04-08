@@ -11,9 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 export class CardComponent {
 
   @Input('cardId') cardId: number;
-  @Input('hidden') hidden: Boolean;
-  @Input('selected') selected: Boolean;
   @Input('smush') smush: Boolean;
+  hidden: Boolean;
+  empty: Boolean;
   cardVal: string;
   cardColor: string;
   points: number;
@@ -21,10 +21,10 @@ export class CardComponent {
   
 
   constructor() {
+    this.empty = false;
 	this.hidden = true;
 	this.cardVal = 'N/A';
 	this.cardColor = 'N/A';
-	this.selected = false;
     this.points = 0;
     this.smush = false;
   }
@@ -32,6 +32,8 @@ export class CardComponent {
   ngOnInit() {
     this.hidden = (this.cardId == -1);
     if (this.hidden) return;
+    this.empty = (this.cardId == -2);
+    if (this.empty) return;
 	const colors = ['green','red','yellow','black','rook'];
 	this.cardColor = colors[Math.floor(this.cardId / 14)];
 	this.cardVal = (this.cardColor === 'rook') ? 'ROOK' : (((this.cardId+1) % 14 + 1).toString()); 

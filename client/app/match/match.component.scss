@@ -4,7 +4,6 @@
   width:70em;
   height:30em;
   margin:10px;
-  border:2px solid blue;
   display:block;
 }
 
@@ -28,7 +27,6 @@
   position:absolute;
   width:25%;
   height:75%;
-  border:1px solid red;
 }
 
 .left_hand {
@@ -45,7 +43,6 @@
   left:25%;
   width:50%;
   height:25%;
-  border:1px solid red;
 }
 
 .across_hand {
@@ -62,7 +59,6 @@
   left:75%;
   width:25%;
   height:75%;
-  border:1px solid red;
 }
 
 .right_hand {
@@ -89,11 +85,28 @@
   }
 }
 
+.kittybox {
+  position:absolute;
+  top:25%;
+  left:25%;
+  width:50%;
+  height:50%;
+  text-align:center;
+}
+
+.playcardbox {
+  position:absolute;
+  top:25%;
+  left:25%;
+  width:50%;
+  height:25%;
+  text-align:center;
+}
+
 .your {
   position:absolute;
   top:75%;
   width:100%;
-  border:1px solid red;
 }
 
 .your_hand {
