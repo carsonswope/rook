@@ -30,7 +30,7 @@
 
 	  <div *ngIf="match.started()">
   	  			match has begun!!!
-  	  		{{match.gameIds[0]}}
+  	  		{{match.gameIds[match.gameIds.length-1]}}
              <div class ="gameBoard">
                 <div *ngFor="let id of [1,2,3]">
                   <div class="{{['left','across','right'][id-1]}}">
@@ -49,6 +49,13 @@
                   <div class="your_hand">
                     <card-component *ngFor="let card of getHand()" [cardId]="card" [selected]="selectedCard==card" [smush]=smushCards (click)="whoseTurn()==userId && select(card)"></card-component>  
                   </div>
+                </div>
+                <div *ngIf="getGameStage()==1 && whoseTurn()==userId" class="bidbox">
+                  <p>{{getBidText()}}</p>
+                  <button (click)="increaseBid()">+</button>
+                  <button (click)="decreaseBid()">-</button>
+                  <button (click)="bid()">BID {{getYourCurrentBid()}}</button>
+                  <button (click)="pass()">PASS</button>
                 </div>
             </div>
             <button *ngIf="!smushCards" (click)="smushCards=true">

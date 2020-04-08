@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatchesService } from '../services/matches.service'
 import { GamesService } from '../services/games.service'
 import { UsernameService } from '../services/username.service'
-import { Match, GameState } from '../../../server/shared/CoreGame';
+import { Match, GameState, Move } from '../../../server/shared/CoreGame';
 
 import { timer } from 'rxjs/observable/timer';
 import { concatMap, map, tap } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class MatchComponent implements OnDestroy {
   games: GameState[] = [];
   discardCards: number[]; //only used during the discard stage!
   smushCards: Boolean;
-
+  yourCurrentBid: number = 0;
   pollInterval = 1000; // poll every 1 second!
   pollTimerSubscription: Subscription; // handle to the 'subscription', so we can cancel when we want
 
@@ -104,8 +104,54 @@ export class MatchComponent implements OnDestroy {
       return this.games[this.games.length-1].gameStage;
   }
   
+  getBidText(): string {
+      return this.match.players[this.games[this.games.length-1].currentWinningPlayer]
+      + " bid "
+      + this.games[this.games.length-1].currentBid.toString();
+  }
+  
+  increaseBid() {
+      this.yourCurrentBid+=5;
+      this.getYourCurrentBid();
+  }
+  
+  move(mv: Move){
+      this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], mv).subscribe((m: Match) => {
+      this.match = m;
+    }, (e) => {
+      console.log('error!');
+      console.log(e);
+    })
+  }
+  
+  bid() {
+      var move: Move = new Move();
+      move.moveType=1; //BID
+      move.bid=this.yourCurrentBid;
+      this.move(move);
+  }
+  
   pass() {
-      console.log('clicked pass!');
+      var move: Move = new Move();
+      move.moveType=1; //BID
+      move.bid=0;
+      this.move(move);
+  }
+  
+  decreaseBid() {
+      this.yourCurrentBid-=5;
+      this.getYourCurrentBid();
+  }
+  
+  getYourCurrentBid(): number {
+      if (this.getGameStage()==1){
+          if (this.yourCurrentBid%5 != 0) this.yourCurrentBid-=this.yourCurrentBid%5;
+          if (this.yourCurrentBid<=this.games[this.games.length-1].currentBid){
+              this.yourCurrentBid = this.games[this.games.length-1].currentBid + 5;
+          }
+          if (this.yourCurrentBid > 200) this.yourCurrentBid = 200;
+      }
+      return this.yourCurrentBid;
   }
 
   startMatch() {

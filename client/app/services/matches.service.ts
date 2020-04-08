@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpResponse } from '@angular/common/http'
 
-import { Match } from '../../../server/shared/CoreGame'
-
+import { Match, Move } from '../../../server/shared/CoreGame'
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -56,5 +55,11 @@ export class MatchesService {
 		  .post<Match>('/api/quit_match', {matchId: matchId}, {observe: 'response'})
 		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
 	}
+    
+    move(matchId: string, gameId: string, move: Move): Observable<Match> {
+        return this.http
+          .post<Match>('/api/game/move', {matchId: matchId, gameId: gameId, move: JSON.stringify(move)}, {observe: 'response'})
+		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
+    }
 
 }

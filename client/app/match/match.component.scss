@@ -74,6 +74,21 @@
   font-size:75%;
   white-space:nowrap;
 }
+
+.bidbox {
+  position:absolute;
+  top:50%;
+  left:25%;
+  width:50%;
+  text-align:center;
+  .p {
+    text-align:center;
+  }
+  .button {
+    text-align:center;
+  }
+}
+
 .your {
   position:absolute;
   top:75%;
