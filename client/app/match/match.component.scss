@@ -7,6 +7,54 @@
   display:block;
 }
 
+.left_card {
+  position:absolute;
+  font-size:66%;
+  top:25%;
+  left:0%;
+}
+
+.left_card.winner {
+  font-size:80%;
+}
+
+.right_card {
+  position:absolute;
+  font-size:66%;
+  top:25%;
+  right:0%;
+}
+
+.right_card.winner {
+  font-size:80%;
+}
+
+.across_card {
+  position:absolute;
+  font-size:66%;
+  top:0%;
+  width:20%;
+  left:40%;
+}
+
+.across_card.winner {
+  font-size:80%;
+}
+
+.your_card {
+  position:absolute;
+  font-size:66%;
+  bottom:0%;
+  width:20%;
+  left:40%;
+}
+
+.your_card.winner {
+  font-size:80%;
+}
+
+
+
 .playerName {
   position:relative;
   text-align:center;
@@ -21,6 +69,12 @@
   font-size:150%;
   color:#ddd;
   -webkit-text-stroke: 1.0px black;
+}
+
+.playInfo {
+  position:relative;
+  text-align:left;
+  margin:0px;
 }
 
 .left {
@@ -99,7 +153,7 @@
   top:25%;
   left:25%;
   width:50%;
-  height:25%;
+  height:50%;
   text-align:center;
 }
 

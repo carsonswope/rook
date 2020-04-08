@@ -91,6 +91,12 @@ export class MatchComponent implements OnDestroy {
           if (this.getGameStage()==1){
               return "BIDDING";
           }
+          if (this.getGameStage()==2){
+              return "DISCARDING";
+          }
+          if (this.getGameStage()==3){
+              return "THINKING";
+          }
       }
       if (this.getGameStage()==1){
           if (this.games[this.games.length-1].passed.includes(relativeNumber)){
@@ -195,6 +201,41 @@ export class MatchComponent implements OnDestroy {
       return tempDiscards;
   }
   
+  getTrump(): string {
+      return ['Green','Red','Yellow','Black'][this.games[this.games.length-1].trump];
+  }
+  
+    getCurrentTrick(): number[] {
+        return this.games[this.games.length-1].currentTrick;
+    }
+    
+  getCurrentTrickLeader(): number {
+      return (this.games[this.games.length-1].currentTrickLeader + 4 - this.playerIndex())%4;
+  }
+  
+  compareCards(card0 : number, card1 : number, trump : number, suit : number) : number{
+      if (card0==56) return 0; //ROOK
+      if (card1==56) return 1;
+      const card0_suit = Math.floor(card0/14);
+      const card1_suit = Math.floor(card1/14);
+      const card0_val = card0%14 + ((card0_suit==suit) ? 14 : 0) + ((card0_suit==trump) ? 28 : 0);
+      const card1_val = card0%14 + ((card1_suit==suit) ? 14 : 0) + ((card1_suit==trump) ? 28 : 0);
+      return (card0 > card1) ? 0 : 1;
+  }
+  
+  getCurrentWinner(): number {
+      if (this.games[this.games.length-1].currentTrick.length==0) return -1;
+      var winner : number = 0;
+      const suit = Math.floor(this.games[this.games.length-1].currentTrick[0]/14);
+      for (var i : number = 1; i < this.games[this.games.length-1].currentTrick.length; i++){
+          if (this.compareCards(this.games[this.games.length-1].currentTrick[winner],
+          this.games[this.games.length-1].currentTrick[i],
+          this.games[this.games.length-1].trump,
+          suit)==1) winner = i;
+      }
+      return winner;
+  }
+  
   cycleTrumpChoice(){
       this.trumpChoice = (this.trumpChoice + 1)%4;
   }
@@ -213,7 +254,7 @@ export class MatchComponent implements OnDestroy {
       var move: Move = new Move();
       move.moveType=3;
       move.card=this.selectedCard;
-      //this.move(move);
+      this.move(move);
   }
   
   getSelectedCard() : number{

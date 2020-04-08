@@ -46,10 +46,12 @@
                   </div>
                 </div>
                 <div *ngIf="getGameStage()==3" class="playtable">
+                  <p class="playInfo">TRUMP: {{getTrump()}}</p>
+                  <card-component *ngFor="let card of getCurrentTrick(); index as i" [cardId]="card" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3+i)%4] + (i==getCurrentWinner() ? ' winner' : '')}}"></card-component>
 				  <div *ngIf="whoseTurn()==userId">
-					  <p>YOUR TURN</p>
+					  <p class="playInfo">YOUR TURN</p>
 					  <card-component *ngIf="getSelectedCard()!=-1" [cardId]="selectedCard" (click)="select(-1)"></card-component>
-					  <br><button (click)="playCard()">PLAY</button>
+					  <br><button *ngIf="getSelectedCard()!=-1" (click)="playCard()">PLAY</button>
 				  </div>
                 </div>
                 <div class="your">
