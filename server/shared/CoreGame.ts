@@ -158,6 +158,7 @@ export class GameState {
 		this.currentTurn++;
 		while (this.passed.indexOf(t) > -1) {
 			t++;
+			t = t % 4;
 		}
 		return t;
 	}

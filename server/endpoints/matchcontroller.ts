@@ -61,7 +61,8 @@ class MatchController {
     if (!m) {
       return res.sendStatus(404);
     }
-    if (m.players[0] != username) {
+    const dealerId = m.gameIds.length % 4;
+    if (m.players[dealerId] != username) {
       return res.sendStatus(403);
     }
     if (!m.allPlayersJoined()) {

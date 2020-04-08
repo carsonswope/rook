@@ -19,7 +19,7 @@
   	  	you are playing in the match!
   	  	<div *ngIf="isOwner()">
   	  		you are the owner of this match!
-  	  		<div *ngIf="match.readyToStart()">
+  	  		<div *ngIf="readyToStartMatch()">
   	  			all players have joined. <br>
   	  			<button (click)="startMatch()">begin game</button>
   	  		</div>

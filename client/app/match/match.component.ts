@@ -284,5 +284,9 @@ export class MatchComponent implements OnDestroy {
          /*this.selectedCard = card;*/
      }
   }
+
+  readyToStartMatch(): boolean {
+    return this.match.allPlayersJoined() && this.match.gameIds.length == 0;
+  }
   
 }
