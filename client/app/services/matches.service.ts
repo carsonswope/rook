@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpResponse } from '@angular/common/http'
 
-import { Match, Move } from '../../../server/shared/CoreGame'
+import { Match, Move, GameState } from '../../../server/shared/CoreGame'
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -56,10 +56,10 @@ export class MatchesService {
 		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
 	}
     
-    move(matchId: string, gameId: string, move: Move): Observable<Match> {
+    move(matchId: string, gameId: string, move: Move): Observable<GameState> {
         return this.http
-          .post<Match>('/api/game/move', {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
-		  .pipe(map((m: HttpResponse<Match>) => {return MatchesService.copy(m.body); }));
+          .post<GameState>('/api/game/move', {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
+		  .pipe(map((m: HttpResponse<GameState>) => {return m.body; }));
     }
 
 }
