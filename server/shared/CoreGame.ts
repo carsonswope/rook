@@ -288,6 +288,13 @@ export class GameState {
 						}
 					}
 
+					const kittyScore = this.kitty.reduce((t, i) => t + i, 0);
+					if (this.lastTrickWinner == 0 || this.lastTrickWinner == 2) {
+						scoreTeam1 += kittyScore;
+					} else {
+						scoreTeam2 += kittyScore;
+					}
+
 					this.score = [scoreTeam1, scoreTeam2];
 					this.gameStage = GAME_STAGE.DONE;
 				}
