@@ -2,3 +2,20 @@
 	color: brown;
 	font-size: 28px;
 }
+
+.join-grid {
+	width: 200px;
+}
+
+.join-top-row, .join-bot-row {
+	text-align: center;
+}
+
+.join-mid-row {
+	// flexbox: very useful
+	display: flex;
+	.spacer {
+		flex-grow: 1;
+	}
+}
+

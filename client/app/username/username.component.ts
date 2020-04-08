@@ -8,7 +8,7 @@ import { RandomnameResponse } from '../../../server/shared/RandomnameResponse';
 @Component({
   selector: 'username-widget',
   templateUrl: './username.component.html',
-  // styleUrls: ['./username.component.scss']
+  styleUrls: ['./username.component.scss'],
 })
 export class UsernameComponent {
 

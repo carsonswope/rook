@@ -56,4 +56,8 @@ export class HomeComponent {
     });
   }
 
+  getActivePlayers(m: Match): string[] {
+    return m.players.filter(p => p);
+  }
+
 }

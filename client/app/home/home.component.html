@@ -1,9 +1,7 @@
 <div class="card">
 
-
-
   <div class="custom-div">
-    Welcome to rook
+    Rook!
   </div>
 
   <username-widget></username-widget>
@@ -21,7 +19,45 @@
 		join match
 	</button>
 	<div *ngIf="joiningMatch">
-		<div *ngFor="let seatId of [0, 1, 2, 3]">
+		<br>
+		<div>
+			<b>Joining match: {{joiningMatch.id}}</b>
+			<button (click)="joiningMatch = null;">cancel</button>
+		</div>
+		<div class="join-grid">
+			<div class="join-top-row">
+				<span *ngIf="joiningMatch.players[0]">
+					{{joiningMatch.players[0]}}
+				</span>
+				<button (click)="joinMatch(0)" *ngIf="!joiningMatch.players[0]">
+					Sit here
+				</button>
+			</div>
+			<div class="join-mid-row">
+				<span *ngIf="joiningMatch.players[1]">
+					{{joiningMatch.players[1]}}
+				</span>
+				<button (click)="joinMatch(1)" *ngIf="!joiningMatch.players[1]">
+					Sit here
+				</button>
+				<span class="spacer"></span>
+				<span *ngIf="joiningMatch.players[3]">
+					{{joiningMatch.players[3]}}
+				</span>
+				<button (click)="joinMatch(3)" *ngIf="!joiningMatch.players[3]">
+					Sit here
+				</button>	
+			</div>
+			<div class="join-bot-row">
+				<span *ngIf="joiningMatch.players[2]">
+					{{joiningMatch.players[2]}}
+				</span>
+				<button (click)="joinMatch(2)" *ngIf="!joiningMatch.players[2]">
+					Sit here
+				</button>
+			</div>
+		</div>
+<!-- 		<div *ngFor="let seatId of [0, 1, 2, 3]">
 			Seat {{seatId}}:
 			<button (click)="joinMatch(seatId)" *ngIf="!joiningMatch.players[seatId]">
 				Sit here
@@ -29,15 +65,19 @@
 			<span *ngIf="joiningMatch.players[seatId]">
 				{{joiningMatch.players[seatId]}}
 			</span>
-		</div>
-		<button (click)="joiningMatch = null;">cancel</button>
+		</div> -->
 	</div>
   </div>
-  <div>
-  	current matches you are playing in:
+
+  <br>
+
+  <div *ngIf="currentMatches && currentMatches.length">
+  	Your current matches:
   	<div *ngFor="let match of currentMatches">
-  		<!-- <div> m </div> -->
-  		<div><b>Match name: {{match.id}}</b> - Other players: {{match.players.join(', ')}}
+
+  		<div><b>Match name: {{match.id}}</b></div>
+  		<div>
+  		Players: {{getActivePlayers(match).join(', ')}}
   		<button [routerLink]="'match/' + match.id">return to match</button>
   		<button (click)="quitMatch(match.id)">quit match</button>
   	    </div>

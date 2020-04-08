@@ -1,11 +1,15 @@
 <div>
-	username: {{getUsername()}}
-	<button (click)="enteringNewUsername = true;">
-		change?
-	</button>
-	<div *ngIf="enteringNewUsername">
-		new!
-		<input type="text" [(ngModel)]="newUsername">
+	username:
+	<span *ngIf="!enteringNewUsername">
+		<span class="username">
+			{{getUsername()}}
+		</span>
+		<button (click)="enteringNewUsername = true;">
+			change?
+		</button>		
+	</span>
+	<span *ngIf="enteringNewUsername">
+		<input class="username" type="text" [(ngModel)]="newUsername">
 		<button (click)="submitNewUsername()"
 				[disabled]="!newUsername.length || newUsername == getUsername()">
 			change
@@ -13,5 +17,5 @@
 		<button (click)="enteringNewUsername = false;">
 			cancel
 		</button>
-	</div>
+	</span>
 </div>
