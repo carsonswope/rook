@@ -331,8 +331,10 @@ export class MatchComponent implements OnDestroy {
          //we have to click twice, angular isn't updated the card for some reason
          if (this.selectedCard != -1) this.selectedCard = -1;
          else {
-			 if (this.isPlayable(card))
+			 if (this.isPlayable(card)){
 				this.selectedCard = card;
+				this.showLastTrick = false;
+			 }
 		 }
          /*this.selectedCard = card;*/
      }
