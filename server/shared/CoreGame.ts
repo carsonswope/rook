@@ -58,6 +58,10 @@ export class GameState {
 	currentTrickLeader: number;
 	currentTrick: number[];
 
+	lastTrickWinner: number;
+	lastTrickLeader: number;
+	lastTrick: number[];
+
 	tricksWon: number[][]; // 4 arrays containing tricks won by each player
 
 	getSuit(c: number): number {
@@ -209,14 +213,19 @@ export class GameState {
 				// leader of this trick is 1 person after the last player to play on the trick,
 				// currentTrick is indexed against whoever played the first card
 				const leadPlayer = (m.playerId + 1) % 4;
+				this.lastTrick = this.currentTrick.slice();
+				this.lastTrickLeader = leadPlayer;
 
 				const rookIdx = this.currentTrick.indexOf(56);
 				if (rookIdx > -1) {
 					const winningPlayer = (leadPlayer + rookIdx) % 4;
+
+					this.lastTrickWinner = winningPlayer;
 					this.currentTrick.forEach(c => this.tricksWon[winningPlayer].push(c));
 					this.currentTrick = [];
 					this.currentTrickLeader = winningPlayer;
 					this.currentTurn = winningPlayer;
+
 				} else {
 
 					const trickHasTrump = 
@@ -238,6 +247,7 @@ export class GameState {
 						console.log('internal server error! poop stink!')
 					}
 
+					this.lastTrickWinner = winningPlayer;
 					this.currentTrick.forEach(c => this.tricksWon[winningPlayer].push(c));
 					this.currentTrick = [];
 					this.currentTrickLeader = winningPlayer;
