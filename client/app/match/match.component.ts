@@ -123,7 +123,8 @@ export class MatchComponent implements OnDestroy {
   }
   
   move(mv: Move){
-      this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], mv).subscribe((m: Match) => {
+	  const final_move : Move = mv;
+      this.matchesService.move(this.matchId, this.match.gameIds[this.match.gameIds.length-1], final_move).subscribe((m: Match) => {
       this.match = m;
     }, (e) => {
       console.log('error!');
