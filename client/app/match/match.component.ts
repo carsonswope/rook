@@ -248,6 +248,10 @@ export class MatchComponent implements OnDestroy {
       return ['Green','Red','Yellow','Black'][this.games[this.games.length-1].trump];
   }
   
+  getFinalBidString(): string {
+	  return this.games[this.games.length-1].finalBid.toString() + ' (' + this.match.players[this.games[this.games.length-1].bidTaker] + ')';
+  }
+  
     getCurrentTrick(): number[] {
         return this.games[this.games.length-1].currentTrick;
     }

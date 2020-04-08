@@ -47,6 +47,7 @@
                 </div>
                 <div *ngIf="getGameStage()==3" class="playtable">
                   <p class="playInfo">TRUMP: {{getTrump()}}</p>
+				  <p class="playInfo">BID: {{getFinalBidString()}}</p>
                   <card-component *ngFor="let card of getCurrentTrick(); index as i" [cardId]="card" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3+i)%4] + (i==getCurrentWinner() ? ' winner' : '')}}"></card-component>
 				  <div *ngIf="whoseTurn()==userId">
 					  <p class="playInfo">YOUR TURN</p>
