@@ -107,7 +107,8 @@ export class GameState {
             	return false;
             }
 
-            const discardable = new Set([...this.hands[m.playerId], this.kitty]);
+            const discardable = new Set([...this.hands[m.playerId]]);
+            this.kitty.forEach(c => discardable.add(c));
             if (!m.discarded.every(d => discardable.has(d))) {
             	console.log('only discard available cards!');
             	return false;
