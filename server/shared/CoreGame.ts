@@ -55,6 +55,14 @@ export class GameState {
 
 	// populated if game stage == playing!
 	trump: number;
+	currentTrickLeader: number;
+	currentTrick: number[];
+
+	tricksWon: number[][]; // 4 arrays containing tricks won by each player
+
+	getSuit(c: number): number {
+		return (c == 56) ? this.trump : Math.floor(c / 14)
+	}
 
 	isMoveValid(m: Move): boolean {
 
@@ -91,7 +99,7 @@ export class GameState {
             }
             if (m.discarded.length != 5 || !m.discarded.every(d => Number.isInteger(d))) {
             	console.log('must discard 5 cards, integers!');
-            	console.log(m.discarded)
+            	// console.log(m.discarded)
             	return false
             }
             if ([...new Set(m.discarded)].length != 5) {
@@ -104,13 +112,31 @@ export class GameState {
             	console.log('only discard available cards!');
             	return false;
             }
+        }  else if (this.gameStage == GAME_STAGE.PLAYING) {
+        	if (m.moveType != MOVE_TYPE.PLAY) { 
+        		console.log('Expecting a card play');
+        		return false;
+        	}
+    		if (!this.hands[m.playerId].includes(m.card)) {
+    			console.log('must have card to play it!');
+    			return false;
+    		}
+    		// if currentTrick is empty (leader!), player can play any card they want.
+    		// otherwise, they have to follow suit if they can!
+    		if (this.currentTrick.length > 0) {
+    			const leadCard = this.currentTrick[0];
+    			const leadSuit = this.getSuit(leadCard);
+    			const playedSuit = this.getSuit(m.card);
+    			if (leadSuit != playedSuit &&
+    				 !this.hands[m.playerId].every(c => this.getSuit(c) != leadSuit)) {
+    				console.log('must be out of suit to not follow suit!');
+    				return false;
+    			}
+    			//console.log('')
+    		}
 
 
-            // console.log('Valid discard!!');
-            // player must be discarding their own cards
-            // no duplicates
-            //if 
-        }
+		}
 
 		return true;
 	}
@@ -166,13 +192,59 @@ export class GameState {
 
 			this.gameStage = GAME_STAGE.PLAYING;
 			this.kitty = m.discarded.slice(); // copy, now kitty holds the discarded cards!
-		} 
 
+			this.currentTrick = [];
+			this.currentTrickLeader = m.playerId;
+			this.tricksWon = [[], [], [], []];
+
+		} else if (m.moveType == MOVE_TYPE.PLAY) {
+
+			this.currentTrick.push(m.card);
+
+			const cardIdx = this.hands[m.playerId].indexOf(m.card);
+			this.hands[m.playerId].splice(cardIdx, 1);
+
+			if (this.currentTrick.length == 4) {
+
+				const trumpIdx = this.currentTrick.indexOf(56);
+				if (trumpIdx > -1) {
+					this.currentTrick.forEach(c => this.tricksWon[trumpIdx].push(c));
+					this.currentTrick = [];
+					this.currentTrickLeader = trumpIdx;
+					this.currentTurn = trumpIdx;
+				} else {
+
+					const trickHasTrump = 
+						this.currentTrick.findIndex(c => this.getSuit(c) == this.trump) > -1;
+					let winningSuit = trickHasTrump ? this.trump : this.getSuit(this.currentTrick[0]);
+					let winningCard = -1;
+					let winningPlayer = -1;
+					this.currentTrick.forEach((c, i) => {
+						if (this.getSuit(c) == winningSuit) {
+							if (c > winningCard) {
+								winningCard = c;
+								winningPlayer = i;
+							}
+						}						
+					});
+
+					if (winningPlayer == -1) {
+						console.log('internal server error! poop stink!')
+					}
+
+					this.currentTrick.forEach(c => this.tricksWon[winningPlayer].push(c));
+					this.currentTrick = [];
+					this.currentTrickLeader = winningPlayer;
+					this.currentTurn = winningPlayer;
+				}
+
+			} else {
+				this.currentTurn = (this.currentTurn + 1) % 4;
+			}
+		}
 
 		return true;
 	}
-
-	// rest of it (current trick) to fill in later
 }
 
 enum MOVE_TYPE {
@@ -211,6 +283,7 @@ const shuffle = (a: number[]) => {
     return a;
 }
 
+
 export class Game {
 	constructor() {
 		this.id = getUUID();
@@ -229,7 +302,6 @@ export class Game {
 		this.startingKitty = deck.slice(52).sort((a, b) => a - b);
 	}
 
-
 	id: string = '';
 	dealer: number;
 
@@ -240,7 +312,7 @@ export class Game {
 	//
 	startingKitty: number[];
 
-	getGameState(playerId: number): GameState {
+	getGameState(playerId: number, filter: boolean = true): GameState {
 		let gs = new GameState();
 		gs.gameStage = GAME_STAGE.BIDDING;
 		gs.currentTurn = this.dealer + 1;
@@ -256,19 +328,20 @@ export class Game {
 		// play through game, updating gamestate
 		this.moves.forEach(m => gs.playMove(m));
 
-		// filter hand before returning to client!
-		for (let i =0; i < 4; i++) {
-			if (playerId != i) {
-				gs.hands[i] = gs.hands[i].map(_ => -1);
+		if (filter) {
+			// filter hand before returning to client!
+			for (let i =0; i < 4; i++) {
+				if (playerId != i) {
+					gs.hands[i] = gs.hands[i].map(_ => -1);
+				}
 			}
-		}
 
-		// why is this typecast necessary?
-		if (gs.gameStage as number == GAME_STAGE.DISCARDING 
-			&& playerId == gs.bidTaker) {
-			console.log('show the kitty!')
-		} else {
-			gs.kitty = [-1, -1, -1, -1, -1];
+			// why is this typecast necessary?
+			if (gs.gameStage as number == GAME_STAGE.DISCARDING && playerId == gs.bidTaker) {
+				console.log('show the kitty!')
+			} else {
+				gs.kitty = [-1, -1, -1, -1, -1];
+			}
 		}
 
 		return gs;

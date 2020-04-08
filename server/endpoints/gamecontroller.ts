@@ -39,8 +39,12 @@ class GameController {
     if (!game) {
       return res.sendStatus(404);
     }
-    let gameState = game.getGameState(playerId);
-    const move: Move = JSON.parse(req.body.move);
+
+    let gameState = game.getGameState(playerId, false);
+    console.log(req.body.move);
+    // const move: Move = JSON.parse(req.body.move);
+    const move: Move = req.body.move;
+
     move.playerId = playerId;
 
     if (!gameState.isMoveValid(move)) {
