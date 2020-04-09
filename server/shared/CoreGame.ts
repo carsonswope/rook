@@ -276,8 +276,15 @@ export class GameState {
 
 					let scoreTeam1 = scores[0] + scores[2];
 					let scoreTeam2 = scores[1] + scores[3];
-
-					// make sure they made their big!
+					
+					const kittyScore = this.kitty.reduce((t, c) => t + this.getCardScore(c), 0);
+					if (this.lastTrickWinner == 0 || this.lastTrickWinner == 2) {
+						scoreTeam1 += kittyScore + 20;
+					} else {
+						scoreTeam2 += kittyScore + 20;
+					}
+					
+					// make sure they made their bid!
 					if (this.bidTaker == 0 || this.bidTaker == 2) {
 						if (scoreTeam1 < this.finalBid) {
 							scoreTeam1 = -this.finalBid;
@@ -288,12 +295,7 @@ export class GameState {
 						}
 					}
 
-					const kittyScore = this.kitty.reduce((t, i) => t + i, 0);
-					if (this.lastTrickWinner == 0 || this.lastTrickWinner == 2) {
-						scoreTeam1 += kittyScore;
-					} else {
-						scoreTeam2 += kittyScore;
-					}
+					
 
 					this.score = [scoreTeam1, scoreTeam2];
 					this.gameStage = GAME_STAGE.DONE;

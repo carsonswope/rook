@@ -71,7 +71,7 @@
 					  <br><button *ngIf="getSelectedCard()!=-1" (click)="playCard()">PLAY</button>
 				  </div>
 				  <div *ngIf="(whoseTurn()!=userId || showLastTrick) && getCurrentTrick().length==0 && getLastTrickWinner()!=-1" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3)%4]}}">
-					  <p>Last trick, taken by {{(getLastTrickWinner()==0) ? 'you' : (match.players[(getLastTrickWinner() + 4 -playerIndex())%4])}}</p>
+					  <p>Last trick, taken by {{match.players[(getLastTrickWinner() + 4 -playerIndex())%4]}}</p>
 					  <card-component *ngFor="let card of getLastTrick()" [cardId]="card" [smush]=true></card-component>
 					  <br><button *ngIf="whoseTurn()==userId" (click)="hideLastTrick()">HIDE</button>
 				  </div>
@@ -103,7 +103,7 @@
             </div>
 			<ng-template #gameOverBlock>
 			<div>
-				<p>End of game! {{((getCurrentGame().bidTaker==0||getCurrentGame().bidTaker==2) ? (match.players[0]+' &and; '+match.players[2]) : (match.players[1]+' &and; '+match.players[3]))}} {{((getCurrentGame().score[getCurrentGame().bidTaker%2]>=getCurrentGame().finalBid) ? 'made' : 'missed')}} their bid of {{getCurrentGame().finalBid}}</p>
+				<p>End of game! {{((getCurrentGame().bidTaker==0||getCurrentGame().bidTaker==2) ? (match.players[0]+' &amp; '+match.players[2]) : (match.players[1]+' &amp; '+match.players[3]))}} {{((getCurrentGame().score[getCurrentGame().bidTaker%2]>=getCurrentGame().finalBid) ? 'made' : 'missed')}} their bid of {{getCurrentGame().finalBid}}</p>
 				<button *ngIf="playerIndex()==games.length%4" (click)="startMatch()">DEAL NEXT GAME</button>
 			</div>
 			</ng-template>
