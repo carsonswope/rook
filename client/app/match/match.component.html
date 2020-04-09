@@ -37,11 +37,11 @@
 				<th>{{match.players[1]}}+{{match.players[3]}}</th>
 			 </tr>
 			 <tr *ngFor="let game of games;index as i">
-			    <td>{{((i&lt;games.length-1) ? game.score[0] : '')}}</td>
+			    <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[0] : '')}}</td>
 				<td>{{(game.bidTaker==0||game.bidTaker==2)? "&larr;" : "\t"}} {{game.finalBid}} {{(game.bidTaker==1||game.bidTaker==3)? "&rarr;" : "\t"}}</td>
-			    <td>{{((i&lt;games.length-1) ? game.score[1] : '')}}</td>
+			    <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[1] : '')}}</td>
 			 </tr>
-			 <tr *ngIf="games.length > 1" class="sumScore">
+			 <tr *ngIf="getGameStage()==4 || games.length > 1" class="sumScore">
 			    <td>{{totalScore(0)}}</td>
 				<td></td>
 				<td>{{totalScore(1)}}</td>
@@ -103,7 +103,8 @@
             </div>
 			<ng-template #gameOverBlock>
 			<div>
-			GAME OVER
+				<p>End of game! {{((getCurrentGame().bidTaker==0||getCurrentGame().bidTaker==2) ? (match.players[0]+' &and; '+match.players[2]) : (match.players[1]+' &and; '+match.players[3]))}} {{((getCurrentGame().score[getCurrentGame().bidTaker%2]>=getCurrentGame().finalBid) ? 'made' : 'missed')}} their bid of {{getCurrentGame().finalBid}}</p>
+				<button *ngIf="playerIndex()==games.length%4" (click)="startMatch()">DEAL NEXT GAME</button>
 			</div>
 			</ng-template>
         </div>
