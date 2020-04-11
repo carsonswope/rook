@@ -123,7 +123,7 @@ export class MatchComponent implements OnDestroy {
   }
   
   whoseTurn(): string {
-      return this.match.players[this.getCurrentGame().currentTurn];
+      return this.match.players[this.getCurrentGame().currentTurn]%4;
   }
   
   getGameStage(): number {
