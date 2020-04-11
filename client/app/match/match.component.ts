@@ -64,7 +64,7 @@ export class MatchComponent implements OnDestroy {
           })
   }
   totalScore(team: number): number {
-	  let sum = this.games.slice(this.games.length+((this.getGameStage()==4)?0:-1)).reduce((val: number, game:GameState) => (val + game.score[team]), 0);
+	  let sum = this.games.slice(0,this.games.length+((this.getGameStage()==4)?0:-1)).reduce((val: number, game:GameState) => (val + game.score[team]), 0);
 	  return sum;
   }
 
