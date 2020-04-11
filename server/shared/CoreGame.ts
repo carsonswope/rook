@@ -390,7 +390,7 @@ export class Game {
 	getGameState(playerId: number, filter: boolean = true): GameState {
 		let gs = new GameState();
 		gs.gameStage = GAME_STAGE.BIDDING;
-		gs.currentTurn = this.dealer + 1;
+		gs.currentTurn = (this.dealer + 1)%4;
 		// make copy!
 		gs.hands = [
 			this.startingHands[0].slice(),
