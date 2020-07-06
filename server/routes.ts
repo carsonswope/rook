@@ -1,6 +1,5 @@
 import * as express from 'express';
 
-import Ctrl from './endpoints/abc';
 import Randomname from './endpoints/randomname';
 import MatchController from './endpoints/matchcontroller';
 import GameController from './endpoints/gamecontroller';
@@ -10,7 +9,7 @@ import { USERNAME_COOKIE } from './shared/Constants';
 import { RookDatabase } from './database';
 
 // read username from cookie and write to request context
-function getUsernameFromCookie(req, res, next) {
+function getUsernameFromCookie(req, _ /* response */, next) {
     const c = 
         (req.headers.cookie || '').split(';')
             .map(c => c.trim())
@@ -36,7 +35,6 @@ function setRoutes(app) {
 
   const db = new RookDatabase();
 
-  const ctrl = new Ctrl();
   const randomname = new Randomname();
 
   const matchCtrl = new MatchController(db);
@@ -53,7 +51,6 @@ function setRoutes(app) {
 
   router.route('/game/move').post(verifyUsername, gameCtrl.playMove);
 
-  router.route('/abc').get(verifyUsername, ctrl.getAbc);
   router.route('/randomname').get(randomname.getRandomname);
 
   app.use('/api', getUsernameFromCookie)

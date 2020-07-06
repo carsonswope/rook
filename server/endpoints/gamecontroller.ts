@@ -21,7 +21,6 @@ class GameController {
   }
 
   playMove = (req, res) => {
-    console.log(req.body.matchId);
     const match = this.d.getMatch(req.body.matchId);
     if (!match) {
       return res.sendStatus(404);
@@ -41,8 +40,6 @@ class GameController {
     }
 
     let gameState = game.getGameState(playerId, false);
-    console.log(req.body.move);
-    // const move: Move = JSON.parse(req.body.move);
     const move: Move = req.body.move;
 
     move.playerId = playerId;

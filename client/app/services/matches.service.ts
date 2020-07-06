@@ -50,16 +50,18 @@ export class MatchesService {
           .pipe(map((m: HttpResponse<Match>) => { return MatchesService.copy(m.body); }));
     }
     
-	quit(matchId: string): Observable<Match> {
-		return this.http
-		  .post<Match>('/api/quit_match', {matchId: matchId}, {observe: 'response'})
-		  .pipe(map((m: HttpResponse<Match>) => {return m.body }));
-	}
+    quit(matchId: string): Observable<Match> {
+		    return this.http
+		        .post<Match>('/api/quit_match', {matchId: matchId}, {observe: 'response'})
+		        .pipe(map((m: HttpResponse<Match>) => {return m.body }));
+	  }
     
     move(matchId: string, gameId: string, move: Move): Observable<GameState> {
         return this.http
-          .post<GameState>('/api/game/move', {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
-		  .pipe(map((m: HttpResponse<GameState>) => {return m.body; }));
+          .post<GameState>(
+              '/api/game/move',
+              {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
+		      .pipe(map((m: HttpResponse<GameState>) => {return m.body; }));
     }
 
 }

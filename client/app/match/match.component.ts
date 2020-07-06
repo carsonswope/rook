@@ -50,7 +50,10 @@ export class MatchComponent implements OnDestroy {
     this.smushCards = false;
 	this.showLastTrick = true;
 
-    const fetchCall = forkJoin(this.matchesService.get(this.matchId), this.gamesService.getAllForMatch(this.matchId));
+    const fetchCall =
+        forkJoin(
+            this.matchesService.get(this.matchId),
+            this.gamesService.getAllForMatch(this.matchId));
 
     this.pollTimerSubscription = 
       timer(0, this.pollInterval)

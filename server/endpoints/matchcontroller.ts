@@ -78,9 +78,6 @@ class MatchController {
         return res.sendStatus(400);
       }
     }
-    //if (!m.readyToStart()) {
-    //  return res.status(400);
-    //}
     // start match == create first game of match. dealer for first match is player 0
     const g = this.d.createGame(m.gameIds.length);
     m.gameIds.push(g.id);

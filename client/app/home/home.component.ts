@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-
-import { AbcResponse } from '../../../server/shared/AbcResponse';
 
 import { MatchesService } from '../services/matches.service'
 import { Match } from '../../../server/shared/CoreGame';
@@ -45,9 +42,9 @@ export class HomeComponent {
   }
   
   quitMatch(matchId: string) {
-	this.matchesService.quit(matchId).subscribe((m: Match) => {
-	  this.currentMatches.splice(this.currentMatches.indexOf(m));
-	});
+    this.matchesService.quit(matchId).subscribe((m: Match) => {
+      this.currentMatches.splice(this.currentMatches.indexOf(m));
+    });
   }
 
   joinMatch(seatId: number) {
