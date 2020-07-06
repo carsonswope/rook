@@ -253,7 +253,7 @@ th {
 }
 
 .your .chatBox::after {
-  top: revert;
+  top: unset;
   bottom: -12px;
   border-top: 12px solid rgb(214, 214, 214);
   border-bottom: none;
