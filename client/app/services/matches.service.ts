@@ -15,6 +15,7 @@ export class MatchesService {
       mNew.id = m.id;
       mNew.players = m.players;
       mNew.gameIds = m.gameIds;
+      mNew.chatMessages = m.chatMessages;
       return mNew;
     }
 
@@ -62,6 +63,12 @@ export class MatchesService {
               '/api/game/move',
               {matchId: matchId, gameId: gameId, move: move}, {observe: 'response'})
 		      .pipe(map((m: HttpResponse<GameState>) => {return m.body; }));
+    }
+
+    postChat(matchId: string, message: string|null): Observable<void> {
+      // empty message will be interpereted as a random complaint
+      const body = {matchId: matchId, message: message || undefined};
+      return this.http.post<void>(`/api/match/${matchId}/chat`, body);
     }
 
 }

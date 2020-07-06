@@ -1,6 +1,12 @@
 // https://www.npmjs.com/package/uuid
 import { v4 as getUUID } from 'uuid';
 
+export class ChatMessage {
+	player: string;
+	timestamp: number; // ms since epoch, utc. standard js
+	message: string;
+}
+
 export class Match {
 	id: string = '';
 	players: string[] = [null, null, null, null];
@@ -8,6 +14,9 @@ export class Match {
 	// ids of games that have been part of the match.
 	// in the order in which they occured
 	gameIds: string[] = [];
+
+	// chat messages that have occured as part of the game
+	chatMessages: ChatMessage[] = [];
 
 	started(): boolean {
 		return this.gameIds.length > 0;

@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatchesService } from '../services/matches.service'
 import { GamesService } from '../services/games.service'
 import { UsernameService } from '../services/username.service'
-import { Match, GameState, Move } from '../../../server/shared/CoreGame';
+import { Match, GameState, Move, ChatMessage } from '../../../server/shared/CoreGame';
 
 import { timer } from 'rxjs/observable/timer';
 import { concatMap, map, tap } from 'rxjs/operators';
@@ -24,6 +24,8 @@ export class MatchComponent implements OnDestroy {
   matchId: string;
   match: Match;
   userId: string;
+
+  notFound: boolean = false;
   
   //used during the play stage
   selectedCard: number;
@@ -37,6 +39,11 @@ export class MatchComponent implements OnDestroy {
   yourCurrentBid: number = 0;
   pollInterval = 1000; // poll every 1 second!
   pollTimerSubscription: Subscription; // handle to the 'subscription', so we can cancel when we want
+
+  // chat messages clear after 10 seconds
+  chatTimeout = 10000;
+
+  pendingChatMessage: string = '';
 
   constructor(
       private matchesService: MatchesService,
@@ -62,6 +69,7 @@ export class MatchComponent implements OnDestroy {
             this.match = out[0];
             this.games = out[1]
           }, (e) => {
+            this.notFound = true;
             console.log('error');
             console.log(e);
           })
@@ -353,6 +361,41 @@ export class MatchComponent implements OnDestroy {
 
   readyToStartMatch(): boolean {
     return this.match.allPlayersJoined() && this.match.gameIds.length == 0;
+  }
+
+  fileComplaint() {
+      this.matchesService
+            .postChat(this.match.id, null)
+            // noop response handler to make observable 'hot'
+            .subscribe(() => {});
+  }
+
+  postChat() {
+      this.matchesService
+          .postChat(this.match.id, this.pendingChatMessage)
+          .subscribe(() => {});
+
+      this.pendingChatMessage = '';
+  }
+
+
+  hasChat(playerIndex: number): boolean {
+      return this.getMessage(playerIndex) != null;
+  }
+
+  getChat(playerIndex: number): string {
+    const m = this.getMessage(playerIndex);
+    return (m && m.message) || '';
+  }
+
+  private getMessage(playerIndex: number): ChatMessage|null {
+    const playerName = this.getPlayerName(playerIndex);
+    const d = +new Date();
+    const messages = this.match.chatMessages.filter(msg =>
+        msg.player == playerName && 
+        (d - msg.timestamp) < this.chatTimeout)
+    if (!messages.length) return null;
+    return messages[messages.length - 1];
   }
   
 }

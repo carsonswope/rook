@@ -1,52 +1,67 @@
 <div>
-	<a [routerLink]="'/'">back to home!</a>
-	<div>
-		welcome to the match component
-	</div>
-	<div *ngIf="match"> 
-	  match: {{match.id}}<br>
+    <a [routerLink]="'/'">Return to lobby</a>
+
+    <div *ngIf="!notFound && !match">
+        Loading..
+    </div>
+
+    <div *ngIf="notFound">
+        There doesn't seem to be a match called {{matchId}}
+    </div>
+
+    <div *ngIf="match"> 
+      <br>
+      Match: {{match.id}}
+      <br>
+      Your player name: {{getPlayerName(0)}}
+      <br>
+
       <div *ngIf="!match.started()">
           players:
           <div *ngFor="let player of match.players">
             -- {{player}}
           </div>
       </div>
-  	  <div *ngIf="!isPlayer()">
-	  		you are observing this match
-  	  </div>
 
-  	  <div *ngIf="isPlayer()">
-  	  	you are playing in the match!
-  	  	<div *ngIf="isOwner()">
-  	  		you are the owner of this match!
-  	  		<div *ngIf="readyToStartMatch()">
-  	  			all players have joined. <br>
-  	  			<button (click)="startMatch()">begin game</button>
-  	  		</div>
-  	  	</div>
-  	  	<div>
-  	  	</div>
-  	  </div>
+      <br>
+      
+        <!-- <div *ngIf="!isPlayer()"> -->
+              <!-- you are observing this match -->
+        <!-- </div> -->
 
-	  <div *ngIf="match.started()" style="text-align:center">
-  	  		 Current Game: {{match.gameIds[match.gameIds.length-1]}}
-			 <table class = "scoretable">
-			 <tr>
-				<th>{{match.players[0]}}+{{match.players[2]}}</th>
-				<th>BID</th>
-				<th>{{match.players[1]}}+{{match.players[3]}}</th>
-			 </tr>
-			 <tr *ngFor="let game of games;index as i">
-			    <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[0] : '')}}</td>
-				<td>{{(game.bidTaker==0||game.bidTaker==2)? "&larr;" : "\t"}} {{game.finalBid}} {{(game.bidTaker==1||game.bidTaker==3)? "&rarr;" : "\t"}}</td>
-			    <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[1] : '')}}</td>
-			 </tr>
-			 <tr *ngIf="getGameStage()==4 || games.length > 1" class="sumScore">
-			    <td>{{totalScore(0)}}</td>
-				<td></td>
-				<td>{{totalScore(1)}}</td>
-			 </tr>
-			 </table>
+        <div *ngIf="isPlayer()">
+            <!-- you are playing in the match! -->
+            <div *ngIf="isOwner()">
+                <!-- you are the owner of this match! -->
+                <div *ngIf="readyToStartMatch()">
+                    all players have joined. <br>
+                    <button (click)="startMatch()">begin game</button>
+                </div>
+            </div>
+            <div>
+            </div>
+        </div>
+
+
+
+      <div *ngIf="match.started()" style="text-align:center">
+             <table class = "scoretable">
+             <tr>
+                <th>{{match.players[0]}}+{{match.players[2]}}</th>
+                <th>BID</th>
+                <th>{{match.players[1]}}+{{match.players[3]}}</th>
+             </tr>
+             <tr *ngFor="let game of games;index as i">
+                <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[0] : '')}}</td>
+                <td>{{(game.bidTaker==0||game.bidTaker==2)? "&larr;" : "\t"}} {{game.finalBid}} {{(game.bidTaker==1||game.bidTaker==3)? "&rarr;" : "\t"}}</td>
+                <td>{{((i&lt;games.length-1 || getGameStage()==4) ? game.score[1] : '')}}</td>
+             </tr>
+             <tr *ngIf="getGameStage()==4 || games.length > 1" class="sumScore">
+                <td>{{totalScore(0)}}</td>
+                <td></td>
+                <td>{{totalScore(1)}}</td>
+             </tr>
+             </table>
              <div *ngIf="inProgress(); else gameOverBlock" class ="gameBoard">
                 <div *ngFor="let id of [1,2,3]">
                   <div class="{{['left','across','right'][id-1]}}">
@@ -58,34 +73,48 @@
                     </div>
                     <div class="playerInfo">
                       {{getPlayerInfo(id)}}
+                      <div *ngIf="hasChat(id)" class="chatBox">
+                        {{getChat(id)}}
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div *ngIf="getGameStage()==3" class="playtable">
                   <p class="playInfo">TRUMP: {{getTrump()}}</p>
-				  <p class="playInfo">BID: {{getFinalBidString()}}</p>
+                  <p class="playInfo">BID: {{getFinalBidString()}}</p>
                   <card-component *ngFor="let card of getCurrentTrick(); index as i" [cardId]="card" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3+i)%4] + (i==getCurrentWinner() ? ' winner' : '')}}"></card-component>
-				  <div *ngIf="whoseTurn()==userId">
-					  <p class="playInfo">YOUR TURN</p>
-					  <card-component *ngIf="getSelectedCard()!=-1" [cardId]="selectedCard" (click)="select(-1)"></card-component>
-					  <br><button *ngIf="getSelectedCard()!=-1" (click)="playCard()">PLAY</button>
-				  </div>
-				  <div *ngIf="(whoseTurn()!=userId || showLastTrick) && getCurrentTrick().length==0 && getLastTrickWinner()!=-1" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3)%4]}}">
-					  <p>Last trick, taken by {{match.players[(getLastTrickWinner() + 4 -playerIndex())%4]}}</p>
-					  <card-component *ngFor="let card of getLastTrick()" [cardId]="card" [smush]=true></card-component>
-					  <br><button *ngIf="whoseTurn()==userId" (click)="hideLastTrick()">HIDE</button>
-				  </div>
+                  <div *ngIf="whoseTurn()==userId">
+                      <p class="playInfo">YOUR TURN</p>
+                      <card-component *ngIf="getSelectedCard()!=-1" [cardId]="selectedCard" (click)="select(-1)"></card-component>
+                      <br><button *ngIf="getSelectedCard()!=-1" (click)="playCard()">PLAY</button>
+                  </div>
+                  <div *ngIf="(whoseTurn()!=userId || showLastTrick) && getCurrentTrick().length==0 && getLastTrickWinner()!=-1" class="{{['left_card','across_card','right_card','your_card'][(getCurrentTrickLeader()+3)%4]}}">
+                      <p>Last trick, taken by {{match.players[(getLastTrickWinner() + 4 -playerIndex())%4]}}</p>
+                      <card-component *ngFor="let card of getLastTrick()" [cardId]="card" [smush]=true></card-component>
+                      <br><button *ngIf="whoseTurn()==userId" (click)="hideLastTrick()">HIDE</button>
+                  </div>
                 </div>
                 <div class="your">
+                    <div *ngIf="hasChat(0)" class="chatBox">
+                        {{getChat(0)}}
+                      </div>
                   <div class="your_hand">
                     <card-component *ngFor="let card of getHand()" [cardId]="card" [smush]=smushCards [playable]=isPlayable(card) (click)="whoseTurn()==userId && select(card)"></card-component>
-					<br>
-					<button *ngIf="!smushCards" (click)="smushCards=true">
-					Smush Cards
-					</button>
-					<button *ngIf="smushCards" (click)="smushCards=false">
-					UnSmush Cards
-					</button>					
+                    <br>
+                    <button *ngIf="!smushCards" (click)="smushCards=true">
+                    Smush Cards
+                    </button>
+                    <button *ngIf="smushCards" (click)="smushCards=false">
+                    UnSmush Cards
+                    </button>
+                    <div>
+                        <button (click)="fileComplaint()"> Complain about hand </button>
+                        <br>
+                        <input [(ngModel)]="pendingChatMessage"/>
+                        <button (click)="postChat()" [disabled]="!pendingChatMessage.length">
+                            Send custom banter
+                        </button>
+                    </div>				
                   </div>
                 </div>
                 <div *ngIf="getGameStage()==1 && whoseTurn()==userId" class="bidbox">
@@ -101,14 +130,14 @@
                   <button *ngIf="getDiscards()[4]!=-2" (click)="discard()">DISCARD</button>
                 </div>
             </div>
-			<ng-template #gameOverBlock>
-			<div>
-				<p>End of game! {{((getCurrentGame().bidTaker==0||getCurrentGame().bidTaker==2) ? (match.players[0]+' &amp; '+match.players[2]) : (match.players[1]+' &amp; '+match.players[3]))}} {{((getCurrentGame().score[getCurrentGame().bidTaker%2]>=getCurrentGame().finalBid) ? 'made' : 'missed')}} their bid of {{getCurrentGame().finalBid}}</p>
-				<button *ngIf="playerIndex()==games.length%4" (click)="startMatch()">DEAL NEXT GAME</button>
-			</div>
-			</ng-template>
+            <ng-template #gameOverBlock>
+            <div>
+                <p>End of game! {{((getCurrentGame().bidTaker==0||getCurrentGame().bidTaker==2) ? (match.players[0]+' &amp; '+match.players[2]) : (match.players[1]+' &amp; '+match.players[3]))}} {{((getCurrentGame().score[getCurrentGame().bidTaker%2]>=getCurrentGame().finalBid) ? 'made' : 'missed')}} their bid of {{getCurrentGame().finalBid}}</p>
+                <button *ngIf="playerIndex()==games.length%4" (click)="startMatch()">DEAL NEXT GAME</button>
+            </div>
+            </ng-template>
         </div>
 
-	</div>
+    </div>
 
 </div>

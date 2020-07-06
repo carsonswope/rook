@@ -45,7 +45,9 @@ function setRoutes(app) {
   router.route('/join_match').post(verifyUsername, matchCtrl.join);
   router.route('/quit_match').post(verifyUsername, matchCtrl.quit);
   router.route('/start_match').post(verifyUsername, matchCtrl.start);
+  router.route('/match/:matchId/chat').post(verifyUsername, matchCtrl.chat)
 
+  
   router.route('/match/:matchId').get(verifyUsername, matchCtrl.get);
   router.route('/match/:matchId/games').get(verifyUsername, gameCtrl.getAll);
 

@@ -195,3 +195,67 @@ th {
   position:absolute;
   
 }
+
+.chatBox {
+  position: absolute;
+  z-index: 100;
+  background-color: rgb(214, 214, 214);
+  padding: 12px;
+  border-radius: 12px;
+  -webkit-text-stroke: 0px;
+  color: #714d4d;
+  font-size: 16px;
+  top: 40px;
+}
+
+.chatBox::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border: 12px solid transparent;
+  border-bottom-color: rgb(214, 214, 214);
+  border-top: 0;
+  border-left: 0;
+  margin-left: -6px;
+  margin-top: -12px;
+}
+
+.left .chatBox {
+  left: 90px;
+}
+
+.left .chatBox::after {
+  left: 20px;
+}
+
+.across .chatBox {
+  left: 150px;
+  max-width: 230px;
+}
+
+.across .chatBox::after {
+  left: 50%;
+}
+
+.right .chatBox {
+  right: 20px;
+}
+
+.right .chatBox::after {
+  right: 20px;
+}
+
+.your .chatBox {
+  left: 20%;
+  top: -54px;
+}
+
+.your .chatBox::after {
+  top: revert;
+  bottom: -12px;
+  border-top: 12px solid rgb(214, 214, 214);
+  border-bottom: none;
+  right: 20px;
+}

@@ -1,5 +1,6 @@
 import { RookDatabase } from '../database';
 import { Match, GAME_STAGE } from '../shared/CoreGame';
+import getRandomComplaint from '../complaints';
 
 class MatchController {
 
@@ -13,7 +14,6 @@ class MatchController {
   get = (req, res) => {
   	// const matchId = req.params.matchId
   	const m = this.d.getMatch(req.params.matchId)
-  	console.log(this.d);
   	if (!m) {
   		return res.sendStatus(404)
   	}
@@ -115,6 +115,32 @@ class MatchController {
 	}
 	
 	return res.status(200).json(m);
+  }
+
+  chat = (req, res) => {
+
+
+	  const matchId: string = req.body.matchId;
+	  const username: string = req.username;
+
+	  const m = this.d.getMatchForPlayer(matchId, username);
+	  if (!m) {
+		  return res.sendStatus(404, `no match named ${matchId} for player ${username}`);
+	  }
+
+	  const message = req.body.message || getRandomComplaint();
+
+	  if (!message) {
+		  return res.sendStatus(400, 'Must either specify random complaint or custom message');
+	  }
+
+	  m.chatMessages.push({
+		  timestamp: +new Date(),
+		  message: message,
+		  player: username,
+	  });
+
+	  return res.status(200).json({});
   }
 
 }
